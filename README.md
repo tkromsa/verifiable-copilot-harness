@@ -45,32 +45,30 @@ docs/
 
 1. Paste `copilot/copilot_custom_instructions_v6_10_0_FINAL.txt` into your Copilot custom instructions (one-time).
 2. In a Copilot chat, attach `VCH_HarnessCore_v6_10_0_FINAL.xlsx` + `copilotstart_v6_10_0_FINAL.txt` (+ the project template if starting a new project).
-3. Type: `nacti vch` -> read-only bootstrap reports version, 40 skills, capabilities, resume point.
+3. Type: `load vch` -> read-only bootstrap reports version, 40 skills, capabilities, resume point.
 4. Start a project: `[skill: PROJECT-FORK]` with Project ID, Name, Owner, Main Goal -> creates your `v001` project workbook.
-5. Work: `proved projektem` -> PROJECT-GUIDE picks one specialist skill per step, enforces phase gates, and only persists through verified modes.
+5. Work: `guide project` -> PROJECT-GUIDE picks one specialist skill per step, enforces phase gates, and only persists through verified modes.
 
 Full daily-driver guide with commands, failure dictionary and migration playbook: **`docs/VCH_Cheatsheet_v6_10_0_EN.docx`**.
 
-> **Why are the triggers Czech?** The command grammar (`nacti vch`, `proved projektem`, ...) is Czech ASCII by design — short, distinct, and collision-free against ordinary English prose, so the model never accidentally fires a skill mid-sentence. Everything else — responses, artifacts, documentation — is English.
-
 ## Everyday commands
 
-Triggers are typed **without diacritics** (that's how they're defined).
+Triggers are plain English atoms — type them exactly as listed, or route explicitly with `[skill: SKILL-ID]`.
 
 | You type | Skill | What happens |
 | --- | --- | --- |
-| `nacti vch` | LOAD-ALL | Read-only bootstrap, resume point |
-| `proved projektem` / `co dal` | PROJECT-GUIDE | Guided step-by-step delivery with gates |
-| `zaloz projekt` | PROJECT-FORK | New v001 workbook from template |
-| `napis plan` | WRITING-PLANS | Implementation plan; every step has VERIFY |
-| `debuguj to` | SYSTEMATIC-DEBUGGING | Root cause first, fix second |
+| `load vch` | LOAD-ALL | Read-only bootstrap, resume point |
+| `guide project` / `what next` | PROJECT-GUIDE | Guided step-by-step delivery with gates |
+| `new project` | PROJECT-FORK | New v001 workbook from template |
+| `write plan` | WRITING-PLANS | Implementation plan; every step has VERIFY |
+| `debug this` | SYSTEMATIC-DEBUGGING | Root cause first, fix second |
 | `review code` | CODE-REVIEW | Findings with severity, no rewriting |
-| `bezpecnostni audit` | SECURITY-REVIEW | Security assessment + triage |
+| `security review` | SECURITY-REVIEW | Security assessment + triage |
 | `verify fix` | VERIFICATION-CHECKLIST | Proof of result; no-error != proof |
 | `update context` | UPDATE-CONTEXT | Checkpoint: writes verified state only |
-| `kontrola driftu` | DECISION-DRIFT-CHECK | Diff against the original assignment |
-| `ocisti vystup` | SCRUB | Sanitizes sensitive values before export |
-| `diagnostika harnessu` | BOOTSTRAP-CHECK | Harness + host-mode diagnostics |
+| `drift check` | DECISION-DRIFT-CHECK | Diff against the original assignment |
+| `scrub this` | SCRUB | Sanitizes sensitive values before export |
+| `bootstrap check` | BOOTSTRAP-CHECK | Harness + host-mode diagnostics |
 
 ## The three file roles — where you write and where you don't
 
