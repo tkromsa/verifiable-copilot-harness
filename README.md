@@ -38,7 +38,7 @@ copilot/
 tools/
   harness_lint_v6_10_0.ps1                  # integrity validator (PowerShell 5.1+, ImportExcel module)
 docs/
-  VCH_Cheatsheet_v6_10_0_EN.docx            # usage cheatsheet — hand this to your colleagues
+  VCH_Cheatsheet_v6_10_0_EN.txt             # usage cheatsheet — hand this to your colleagues
 ```
 
 ## Quick start (5 minutes)
@@ -49,7 +49,7 @@ docs/
 4. Start a project: `[skill: PROJECT-FORK]` with Project ID, Name, Owner, Main Goal -> creates your `v001` project workbook.
 5. Work: `guide project` -> PROJECT-GUIDE picks one specialist skill per step, enforces phase gates, and only persists through verified modes.
 
-Full daily-driver guide with commands, failure dictionary and migration playbook: **`docs/VCH_Cheatsheet_v6_10_0_EN.docx`**.
+Full daily-driver guide with commands, failure dictionary and migration playbook: **`docs/VCH_Cheatsheet_v6_10_0_EN.txt`**.
 
 ## Everyday commands
 
