@@ -1,4 +1,4 @@
-Verifiable Copilot Harness - Quick Use Guide v6.14.0
+Verifiable Copilot Harness - Quick Use Guide v6.15.0
 
 WHAT IT IS
 A governed set of 43 skills and verification rules for Copilot work. It supports lightweight non-project work, controlled project creation and self-contained project workbooks without requiring every VCH file in every session. From v6.13.0 it also carries an embedded, out-of-bootstrap behavioral regression corpus (__ROUTING_ORACLE).
@@ -122,7 +122,7 @@ focus mode / adhd mode
 status / where are we / current status
 - STATUS returns only the Status Card (Mode, Resume, Gate, Verified, Next). Read-only.
 what can you do / available skills
-- CAPABILITY-DISCOVERY lists only skills usable right now (mode, gates, capability). Never the full catalog.
+- CAPABILITY-DISCOVERY lists only skills usable right now (Allowed_Modes column, gates, capability). Never the full catalog.
 run routing oracle
 - Behavioral regression run of __ROUTING_ORACLE (not a formal trigger; explicit request only).
 
