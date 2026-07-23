@@ -1,7 +1,7 @@
 [CmdletBinding()]param([Parameter(Mandatory=$true)][string[]]$Path)
 Set-StrictMode -Version Latest
 $ErrorActionPreference='Stop'
-$expectedVersion='v6.14.0'
+$expectedVersion='v6.15.0'
 $excel=$null
 $failed=$false
 try {
@@ -25,6 +25,9 @@ try {
    if(@($versions|Where-Object{$_-ne $expectedVersion}).Count){throw 'Skill version mismatch'}
    if(@($atoms|Group-Object|Where-Object Count -gt 1).Count){throw 'Duplicate trigger atom'}
    foreach($a in $atoms){foreach($b in $atoms){if($a-ne$b -and $b.StartsWith($a)){throw "Trigger prefix collision: $a -> $b"}}}
+   $colModes=$headers['Allowed_Modes'];$validModes=@('HARNESS','TEMPLATE','PROJECT-CREATION','PROJECT','MIGRATION');$badModes=@()
+   for($r=$hr+1;$r -le $skills.GetLength(0);$r++){if($skills[$r,$headers.Skill_ID]){$mv=[string]$skills[$r,$colModes];if(!$mv){$badModes+="$($skills[$r,$headers.Skill_ID]):empty"}elseif($mv -ne 'ALL'){foreach($m in ($mv -split ', ')){if($validModes -notcontains $m.Trim()){$badModes+="$($skills[$r,$headers.Skill_ID]):$m"}}}}}
+   if($badModes.Count){throw "Invalid Allowed_Modes: $($badModes -join ', ')"}
    $ro=$wb.Worksheets.Item('__ROUTING_ORACLE').UsedRange.Value2
    $rr=0;for($r=1;$r-le$ro.GetLength(0);$r++){if($ro[$r,1]-eq 'Test_ID'){$rr=$r;break}}
    $rh=@{};for($c=1;$c-le$ro.GetLength(1);$c++){$rh[[string]$ro[$rr,$c]]=$c}
@@ -39,7 +42,7 @@ try {
    $state=$wb.Worksheets.Item('__STATE').UsedRange.Value2;$probeRow=0
    for($r=1;$r-le$state.GetLength(0);$r++){if($state[$r,1]-eq'__WRITE_PROBE'){$probeRow=$r}}
    if($probeRow-ne31){throw "__WRITE_PROBE row $probeRow, expected 31"}
-   Write-Host "PASS $full skills=43 routing=55 probe=B31" -ForegroundColor Green
+   Write-Host "PASS $full skills=43 routing=55 probe=B31 modes=ok" -ForegroundColor Green
   } finally {$wb.Close($false);[void][Runtime.InteropServices.Marshal]::ReleaseComObject($wb)}
  }
 } catch {$failed=$true;Write-Error $_} finally {if($excel){$excel.Quit();[void][Runtime.InteropServices.Marshal]::ReleaseComObject($excel)};[GC]::Collect();[GC]::WaitForPendingFinalizers()}
