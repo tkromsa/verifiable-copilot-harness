@@ -38,7 +38,7 @@ VCH addresses these risks with explicit rules and verifiable artifacts.
 | Persistence router | Persistent change requires an evidenced persistence mode. Otherwise the result is `READ_ONLY` or `WRITE_BLOCKED`. |
 | SCRUB | Sensitive output must pass deterministic sanitization before crossing a trust boundary. |
 | Status Card | Key lifecycle events end with Mode, Resume, Gate, Verified and Next. |
-| Deterministic lint | `tools/harness_lint.txt` performs the structural checks required for release promotion. |
+| Deterministic lint | `tools/harness_lint.ps1` performs the structural checks required for release promotion. |
 
 ## Repository layout
 
@@ -50,13 +50,13 @@ copilot/
   copilotstart.txt
   copilot_custom_instructions.txt
 tools/
-  harness_lint.txt
+  harness_lint.ps1
 docs/
   VCH_Cheatsheet_EN.txt
 VCH_release_manifest.json
 ```
 
-The PowerShell validator is distributed as `.txt` for environments that block script attachments. Rename it to `harness_lint.ps1` only in a trusted local working directory before execution.
+The validator is a plain Windows PowerShell script using desktop Excel via COM. No modules or add-ons are required.
 
 ## Workbook modes
 
@@ -188,13 +188,7 @@ A catalog or schema change is promoted only when both gates pass.
 
 ### 1. Structural gate
 
-Rename the downloaded validator locally:
-
-```powershell
-Rename-Item .\tools\harness_lint.txt harness_lint.ps1
-```
-
-Run it on Windows with desktop Excel installed:
+Run the validator on Windows with desktop Excel installed:
 
 ```powershell
 .\tools\harness_lint.ps1 -Path `
