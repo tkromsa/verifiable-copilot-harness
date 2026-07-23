@@ -1,50 +1,50 @@
 {
   "VCH_HarnessCore.xlsx": {
-    "sha256": "df76a30e21e3e7c671b1c9b68f9108a4ca776e28a8eeca1f798f4a1d0ffbe21e",
-    "bytes": 41999,
+    "sha256": "09895cfcb3006674f34588069fb811e49de7f399ec438e70a426b56d041c04c0",
+    "bytes": 43875,
     "checks": {
-      "skills_41": true,
+      "skills_43": true,
       "versions": true,
       "probe_instruction": true,
-      "route_52": true,
+      "route_55": true,
       "route_unique": true,
       "route_refs": true,
       "tie_fixtures": true,
       "probe": true,
       "supersession": true,
-      "load_all_restored": true
+      "status_card": true
     }
   },
   "VCH_ProjectTemplate.xlsx": {
-    "sha256": "d69a0e5c965b9a67cb2a8da2ef5dea8ab2247d4c9b1db56a185beae1ba687cb6",
-    "bytes": 46839,
+    "sha256": "be9de3c6b256b389c9d68e6d3a55e1b54b4ef85faea09c5d4c3d3f61eee85d96",
+    "bytes": 48660,
     "checks": {
-      "skills_41": true,
+      "skills_43": true,
       "versions": true,
       "probe_instruction": true,
-      "route_52": true,
+      "route_55": true,
       "route_unique": true,
       "route_refs": true,
       "tie_fixtures": true,
       "probe": true,
       "supersession": true,
-      "load_all_restored": true
+      "status_card": true
     }
   },
   "copilot_custom_instructions.txt": {
-    "sha256": "69e3e6dfb4f1039d4c1d19981e40487e731d6a2a2f5dc4f87a295cb92f13608c",
-    "bytes": 8199
+    "sha256": "b786569e3abca7af0633159facab31109831ebf6252f2a8645789452fe476e58",
+    "bytes": 9052
   },
   "copilotstart.txt": {
-    "sha256": "35ef8b9fcb75494ede726428306abb8390c72a67ac328b51d44ac8fd9eadbc4b",
-    "bytes": 12652
+    "sha256": "7b61a2d92fad6525d0aebdb0917661763c611051b3d5efe15de6536345c3ed29",
+    "bytes": 13506
   },
   "VCH_Cheatsheet_EN.txt": {
-    "sha256": "acec19ec9edc7e2070377b5254bed1452a0dbf199dac18038035a37d163cd30a",
-    "bytes": 11786
+    "sha256": "50fd2ea3be582f6529b76a82979f9e78593d338f9654d993393e8fde74c608ec",
+    "bytes": 12056
   },
   "harness_lint.ps1": {
-    "sha256": "606a59fd95d4df7b24a45fe2d012c98a225a9d62a27e9b8463981bc8d7526b3b",
+    "sha256": "3b38144b659848ebed6bfe45775f4c5071e601898ef0c7cdaae6658d6b631a3b",
     "bytes": 3579
   }
 }
