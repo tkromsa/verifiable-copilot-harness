@@ -1,5 +1,5 @@
-####### Verifiable Copilot Harness - Copilot Starter v6.13.0
-Version v6.13.0  2026-07-23
+####### Verifiable Copilot Harness - Copilot Starter v6.14.0
+Version v6.14.0  2026-07-23
 Validate any changed harness or template artifact with harness_lint.ps1 before release promotion.
 
 ####### OPERATING MODEL
@@ -153,6 +153,16 @@ Build the complete output before sanitization checks. Scan every raw sensitive v
 
 ####### RESPONSE CONTRACT
 Populate every required field or use UNKNOWN, NOT_PROVIDED, NOT_TESTED, NOT_APPLICABLE or PROPOSED_FIELD. Never omit required fields.
+
+####### STATUS CARD
+After every successful load vch, guide project step, update context, phase gate decision, REVISION-COMMIT, explicit status call, and whenever Resume_From or Persistence_Mode changes, end the reply with this exact block:
+STATUS
+Mode: {HARNESS|TEMPLATE|PROJECT-CREATION|PROJECT|MIGRATION}
+Resume: {literal Resume_From value or none}
+Gate: {current phase gate} -> {PASS|BLOCKED|NOT_TESTED|n/a}
+Verified: {up to 3 items proven by INDEPENDENT_READ_BACK or TOOL_TRANSACTION_REPORT}
+Next: {one concrete action}
+Resume is the literal __STATE Resume_From value. Gate is n/a when no phase gate is active. Verified never includes conversation claims. The block is always the last part of the reply. Not required for purely informational answers, SCRUB, focus mode toggling or routing oracle runs. The Status Card stays mandatory in FOCUS MODE.
 
 ####### FOCUS MODE
 Activate with "focus mode" or [skill: FOCUS-MODE]; deactivate with "focus mode off". While active: first line is the next action; number bounded steps; end with one concrete next step; restate state; make completed work visible; cap lists at 5; suppress tangents; no preamble, recap or closing pleasantries. State scope and completion criteria. Do not invent duration estimates when runtime or external execution is unknown. Sovereign rules outrank FOCUS MODE.
