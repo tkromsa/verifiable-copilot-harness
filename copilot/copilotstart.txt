@@ -1,5 +1,5 @@
-####### Verifiable Copilot Harness - Copilot Starter v6.14.0
-Version v6.14.0  2026-07-23
+####### Verifiable Copilot Harness - Copilot Starter v6.15.0
+Version v6.15.0  2026-07-23
 Validate any changed harness or template artifact with harness_lint.ps1 before release promotion.
 
 ####### OPERATING MODEL
