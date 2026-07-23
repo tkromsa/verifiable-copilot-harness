@@ -1,0 +1,50 @@
+{
+  "VCH_HarnessCore.xlsx": {
+    "sha256": "df76a30e21e3e7c671b1c9b68f9108a4ca776e28a8eeca1f798f4a1d0ffbe21e",
+    "bytes": 41999,
+    "checks": {
+      "skills_41": true,
+      "versions": true,
+      "probe_instruction": true,
+      "route_52": true,
+      "route_unique": true,
+      "route_refs": true,
+      "tie_fixtures": true,
+      "probe": true,
+      "supersession": true,
+      "load_all_restored": true
+    }
+  },
+  "VCH_ProjectTemplate.xlsx": {
+    "sha256": "d69a0e5c965b9a67cb2a8da2ef5dea8ab2247d4c9b1db56a185beae1ba687cb6",
+    "bytes": 46839,
+    "checks": {
+      "skills_41": true,
+      "versions": true,
+      "probe_instruction": true,
+      "route_52": true,
+      "route_unique": true,
+      "route_refs": true,
+      "tie_fixtures": true,
+      "probe": true,
+      "supersession": true,
+      "load_all_restored": true
+    }
+  },
+  "copilot_custom_instructions.txt": {
+    "sha256": "69e3e6dfb4f1039d4c1d19981e40487e731d6a2a2f5dc4f87a295cb92f13608c",
+    "bytes": 8199
+  },
+  "copilotstart.txt": {
+    "sha256": "35ef8b9fcb75494ede726428306abb8390c72a67ac328b51d44ac8fd9eadbc4b",
+    "bytes": 12652
+  },
+  "VCH_Cheatsheet_EN.txt": {
+    "sha256": "acec19ec9edc7e2070377b5254bed1452a0dbf199dac18038035a37d163cd30a",
+    "bytes": 11786
+  },
+  "harness_lint.ps1": {
+    "sha256": "606a59fd95d4df7b24a45fe2d012c98a225a9d62a27e9b8463981bc8d7526b3b",
+    "bytes": 3579
+  }
+}
