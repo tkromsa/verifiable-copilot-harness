@@ -2,11 +2,11 @@
 
 **Turn Microsoft Copilot (Excel + Chat) into a disciplined, evidence-driven project operator — no Cowork, no plugins, no paid add-ons required.**
 
-A behavior harness for Microsoft Copilot in strict corporate environments: 41 skills, frozen acceptance criteria, a deterministic lint gate, a frozen behavioral routing corpus, revision-controlled project workbooks and evidence-scoped persistence. Copilot stops inventing state, never rewrites files without proof, and can guide a project step by step from intake to verified closeout.
+A behavior harness for Microsoft Copilot in strict corporate environments: 43 skills, frozen acceptance criteria, a deterministic lint gate, a frozen behavioral routing corpus, revision-controlled project workbooks and evidence-scoped persistence. Copilot stops inventing state, never rewrites files without proof, and can guide a project step by step from intake to verified closeout.
 
 Built for people stuck in locked-down enterprises where Copilot (or a similar LLM chat) is the *only* AI tool allowed.
 
-**Current version: v6.13.0** — one-active-workbook operating modes (ADR-011) and an embedded, out-of-bootstrap `__ROUTING_ORACLE` behavioral regression corpus (ADR-012). Filenames are version-independent (ADR-010); the version lives inside the artifacts and is reported by `load vch`.
+**Current version: v6.14.0** — adds STATUS and CAPABILITY-DISCOVERY skills plus a mandatory compact Status Card after key steps (ADR-013). One-active-workbook modes since v6.12.0 (ADR-011), embedded `__ROUTING_ORACLE` behavioral corpus since v6.13.0 (ADR-012). Filenames are version-independent (ADR-010); the version lives inside the artifacts and is reported by `load vch`.
 
 ## Why it exists
 
@@ -28,13 +28,14 @@ This harness fixes that with a set of sovereign safety rules the model must foll
 | **Evidence classes** | INDEPENDENT_READ_BACK vs. conversation claims vs. inference — self-report is not verification. |
 | **Persistence router** | Persistent change only via an evidenced mode: copy-on-write, precopied artifact, or in-place checkpoint. Otherwise READ_ONLY / WRITE_BLOCKED. |
 | **SCRUB** | No output crosses the trust boundary with raw sensitive values. |
+| **Status card** | Every key step (bootstrap, guide step, gate, revision, update context) ends with a compact STATUS block: Mode, Resume, Gate, Verified, Next. |
 | **Deterministic lint** | Every DETERMINISTIC_SCAN check in the oracle has a real executable implementation in `tools/harness_lint.ps1`. Exit code 0 or it doesn't ship. |
 
 ## Repository layout
 
 ```
 core/
-  VCH_HarnessCore.xlsx        # the brain: 41 skills, rules, oracle, routing oracle — never write to it
+  VCH_HarnessCore.xlsx        # the brain: 43 skills, rules, oracle, routing oracle — never write to it
   VCH_ProjectTemplate.xlsx    # immutable project template — fork new projects from it
 copilot/
   copilotstart.txt            # session starter instructions — attach with the active workbook
@@ -62,7 +63,7 @@ Normal operation uses **one active workbook**:
 
 1. Paste `copilot/copilot_custom_instructions.txt` into your Copilot custom instructions (one-time).
 2. In a Copilot chat, attach `VCH_HarnessCore.xlsx` + `copilotstart.txt` (+ the project template if starting a new project).
-3. Type: `load vch` -> read-only bootstrap reports workbook mode, version, 41 skills, capabilities, resume point.
+3. Type: `load vch` -> read-only bootstrap reports workbook mode, version, 43 skills, capabilities, resume point.
 4. Start a project: `[skill: PROJECT-FORK]` with Project ID, Name, Owner, Main Goal -> creates your `v001` project workbook.
 5. Work: `guide project` -> PROJECT-GUIDE picks one specialist skill per step, enforces phase gates, and only persists through verified modes.
 
@@ -87,6 +88,8 @@ Triggers are plain English atoms — type them exactly as listed, or route expli
 | `scrub this` | SCRUB | Sanitizes sensitive values before export |
 | `bootstrap check` | BOOTSTRAP-CHECK | Harness + host-mode diagnostics |
 | `focus mode` | FOCUS-MODE | Action-first ADHD-friendly output; `focus mode off` deactivates |
+| `status` / `where are we` | STATUS | Read-only Status Card — nothing else |
+| `what can you do` | CAPABILITY-DISCOVERY | Skills usable right now (mode, gates, capability) |
 
 ## FOCUS-MODE (since v6.11.0)
 
@@ -114,7 +117,7 @@ Changing the harness is a governed change:
 .\tools\harness_lint.ps1 -Path .\core\VCH_HarnessCore.xlsx, .\core\VCH_ProjectTemplate.xlsx
 ```
 
-The lint (Windows PowerShell + Excel COM) checks: required sheets including `__ROUTING_ORACLE`, skill count 41, version agreement, trigger duplicates/prefix collisions, 52 routing fixtures with unique IDs and resolvable skill refs, complete TIE fixtures, and the `PROBE_CELL` named range.
+The lint (Windows PowerShell + Excel COM) checks: required sheets including `__ROUTING_ORACLE`, skill count 43, version agreement, trigger duplicates/prefix collisions, 55 routing fixtures with unique IDs and resolvable skill refs, complete TIE fixtures, and the `PROBE_CELL` named range.
 
 Before promoting a catalog change, also run the behavioral corpus: `run routing oracle` — 52 frozen fixtures, each fed in isolation, compared against `Expected_Skill_ID` / `Expected_Verdict`.
 
