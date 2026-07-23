@@ -6,6 +6,8 @@ Verifiable Copilot Harness (VCH) is a behavior harness for strict corporate envi
 
 The harness is designed to prevent inferred state from being treated as verified state and to block persistence when the required evidence or runtime capability is unavailable.
 
+📖 **Full documentation: [the Wiki](https://github.com/tkromsa/verifiable-copilot-harness/wiki)** — usage guide, all 43 skills, release gates and integrity checks.
+
 **Current version: v6.15.1**
 
 - v6.15.1 hardens the release gate, removes the stale active B32 probe instruction, restores historical ADR release identity and aligns all active routing counts to 55.
