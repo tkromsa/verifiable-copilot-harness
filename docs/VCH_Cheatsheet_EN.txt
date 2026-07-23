@@ -1,7 +1,7 @@
-Verifiable Copilot Harness - Quick Use Guide v6.13.0
+Verifiable Copilot Harness - Quick Use Guide v6.14.0
 
 WHAT IT IS
-A governed set of 41 skills and verification rules for Copilot work. It supports lightweight non-project work, controlled project creation and self-contained project workbooks without requiring every VCH file in every session. From v6.13.0 it also carries an embedded, out-of-bootstrap behavioral regression corpus (__ROUTING_ORACLE).
+A governed set of 43 skills and verification rules for Copilot work. It supports lightweight non-project work, controlled project creation and self-contained project workbooks without requiring every VCH file in every session. From v6.13.0 it also carries an embedded, out-of-bootstrap behavioral regression corpus (__ROUTING_ORACLE).
 
 THE CORE IDEA
 Normal operation uses one active workbook.
@@ -28,7 +28,7 @@ Result: The old project remains read-only. A new project line is created from th
 
 FILES
 VCH_HarnessCore.xlsx
-- Complete behavior-only kernel: rules, 41 skills, oracle, routing oracle, state schema, lists, ADR and glossary.
+- Complete behavior-only kernel: rules, 43 skills, oracle, routing oracle, state schema, lists, ADR and glossary.
 - Never use as a project state anchor.
 - Never write project delivery content into it.
 VCH_ProjectTemplate.xlsx
@@ -119,6 +119,10 @@ scrub this / scrub output
 focus mode / adhd mode
 - FOCUS-MODE activates action-first output.
 - Deactivate with: focus mode off
+status / where are we / current status
+- STATUS returns only the Status Card (Mode, Resume, Gate, Verified, Next). Read-only.
+what can you do / available skills
+- CAPABILITY-DISCOVERY lists only skills usable right now (mode, gates, capability). Never the full catalog.
 run routing oracle
 - Behavioral regression run of __ROUTING_ORACLE (not a formal trigger; explicit request only).
 
@@ -132,7 +136,7 @@ ROUTING ORACLE (behavioral regression, out-of-bootstrap)
 - What the lint does vs does not: harness_lint checks only structure (every Expected_Skill_ID is NONE or an existing Skill_ID; every Test_ID is unique). It never asserts the routing decision. The routing decision is a behavioral test executed by the model.
 
 FROZEN ORACLE (structural)
-- __TEST_ORACLE remains the structural gate: SKILLCOUNT=41, version agreement, trigger duplicates and prefix collisions, non-ASCII, chains, enums, state, probe cell, mode, plus three ROUTING structural rows (present, unresolved skill refs, duplicate Test_ID).
+- __TEST_ORACLE remains the structural gate: SKILLCOUNT=43, version agreement, trigger duplicates and prefix collisions, non-ASCII, chains, enums, state, probe cell, mode, plus three ROUTING structural rows (present, unresolved skill refs, duplicate Test_ID).
 
 PERSISTENCE MODES
 READ_ONLY
