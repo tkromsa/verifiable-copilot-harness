@@ -6,7 +6,7 @@ A behavior harness for Microsoft Copilot in strict corporate environments: 43 sk
 
 Built for people stuck in locked-down enterprises where Copilot (or a similar LLM chat) is the *only* AI tool allowed.
 
-**Current version: v6.14.0** — adds STATUS and CAPABILITY-DISCOVERY skills plus a mandatory compact Status Card after key steps (ADR-013). One-active-workbook modes since v6.12.0 (ADR-011), embedded `__ROUTING_ORACLE` behavioral corpus since v6.13.0 (ADR-012). Filenames are version-independent (ADR-010); the version lives inside the artifacts and is reported by `load vch`.
+**Current version: v6.15.0** — adds the `Allowed_Modes` catalog column for deterministic, lint-enforced mode-based skill filtering (ADR-014). STATUS, CAPABILITY-DISCOVERY and the Status Card landed in v6.14.0 (ADR-013). One-active-workbook modes since v6.12.0 (ADR-011), embedded `__ROUTING_ORACLE` behavioral corpus since v6.13.0 (ADR-012). Filenames are version-independent (ADR-010); the version lives inside the artifacts and is reported by `load vch`.
 
 ## Why it exists
 
@@ -89,7 +89,7 @@ Triggers are plain English atoms — type them exactly as listed, or route expli
 | `bootstrap check` | BOOTSTRAP-CHECK | Harness + host-mode diagnostics |
 | `focus mode` | FOCUS-MODE | Action-first ADHD-friendly output; `focus mode off` deactivates |
 | `status` / `where are we` | STATUS | Read-only Status Card — nothing else |
-| `what can you do` | CAPABILITY-DISCOVERY | Skills usable right now (mode, gates, capability) |
+| `what can you do` | CAPABILITY-DISCOVERY | Skills usable right now (`Allowed_Modes`, gates, capability) |
 
 ## FOCUS-MODE (since v6.11.0)
 
@@ -136,7 +136,7 @@ Standing on the shoulders of the open agent-skills community — thanks for the 
 - **[obra/superpowers](https://github.com/obra/superpowers)** — the original skills harness that proved skills-in-files work
 - **[Grill Me — mattpocock/skills](https://github.com/mattpocock/skills/blob/main/skills/productivity/grill-me/SKILL.md)** — adversarial requirement-grilling pattern (one question at a time)
 - **[rjs/shaping-skills](https://github.com/rjs/shaping-skills)** — skill-shape design ideas
-- **Gentle AI** — human-in-the-loop agent workflows
+- **[Gentle AI — Gentleman-Programming/gentle-ai](https://github.com/Gentleman-Programming/gentle-ai)** — human-in-the-loop agent workflows
 - **[ayghri/i-have-adhd](https://github.com/ayghri/i-have-adhd)** — ADHD-friendly output rules adapted as FOCUS-MODE
 
 This project is an independent implementation for the Microsoft Copilot + Excel world, built and hardened iteratively by a human operator working through a small parliament of LLMs. No corporate resources, names or data inside — the harness is fully anonymized.
