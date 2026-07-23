@@ -1,0 +1,169 @@
+Cheatsheet: how to use it effectively (v6.11.0)
+
+1. What it is — in one sentence
+
+A rule set and 41 skills that govern how Copilot in Excel and chat works on projects: always read-only bootstrap first, decisions on evidence (not guesses), revisions under control, and persistence only through verified modes. As a result, Copilot does not invent state, does not rewrite files without proof, and can guide an entire project step by step.
+
+2. What you need
+
+  File                            What it is for
+  ------------------------------  -------------------------------------------------------------------------------------------
+  VCH_HarnessCore.xlsx            The brain: 41 skills, rules, oracle. Attach as knowledge — nothing is ever written to it.
+  VCH_ProjectTemplate.xlsx        Immutable template. Used only as the source for forking a new project.
+  copilotstart.txt                Starter: session instructions. Attach together with HarnessCore.
+  copilot_custom_instructions.txt Paste into Copilot Custom Instructions (one-time).
+  harness_lint.ps1                Integrity validator. Needed only when changing the harness, not for daily work.
+
+3. Three file roles — where you write and where you don't
+
+  File                    Role                                        Write to it?
+  ----------------------- ------------------------------------------- ----------------------------------
+  HarnessCore             Behavior kernel — HOW Copilot must behave   NEVER
+  ProjectTemplate         Project workbook schema                     NEVER — fork only
+  <ID>_<Name>_v001.xlsx   Your own project workbook                   YES — this is where work happens
+
+In short: HarnessCore = brain, template = the stamp for starting projects, project workbook = the work surface.
+
+4. The basic cycle in 5 steps
+
+  #   Step              What you type / what happens
+  --  ----------------  -----------------------------------------------------------------------------------
+  1   Attach files      HarnessCore always; plus the template (new project) or the current project revision.
+  2   Bootstrap         load vch -> read-only check: version, 41 skills, capability, resume point.
+  3   Start a project   [skill: PROJECT-FORK] + Project ID, Name, Owner, Main Goal -> creates the v001 workbook.
+  4   Guided work       guide project -> PROJECT-GUIDE picks a skill, watches gates, verifies every step.
+  5   Save state        update context -> writes verified state and Resume_From for the next session.
+
+5. Commands you use daily
+
+Type them into chat as normal text. Triggers are plain English atoms — type them exactly as listed (or route explicitly with [skill: SKILL-ID]).
+
+  You type                    Skill                    What it does
+  --------------------------  -----------------------  -------------------------------------------------------------
+  load vch                    LOAD-ALL                 Loads the harness, read-only bootstrap, resume point
+  guide project / what next   PROJECT-GUIDE            Guides the project step by step, watches gates
+  new project                 PROJECT-FORK             Creates the v001 project workbook from the template
+  write plan                  WRITING-PLANS            Implementation plan; every step must have a VERIFY
+  debug this                  SYSTEMATIC-DEBUGGING     Root cause first, fix second; phase by phase
+  analyze data                DATA-ANALYSIS            Structured insight into data/logs
+  review code                 CODE-REVIEW              Findings without rewriting code, with severity
+  security review             SECURITY-REVIEW          Security assessment -> finding triage
+  verify fix                  VERIFICATION-CHECKLIST   Proof of result; no error is not proof
+  compound                    COMPOUND                 Stores the verified solution in the worklog
+  drift check                 DECISION-DRIFT-CHECK     Are we on target? Diff against the assignment
+  update context              UPDATE-CONTEXT           Checkpoint: writes verified state only
+  bootstrap check             BOOTSTRAP-CHECK          Harness and host-mode diagnostics
+  scrub this                  SCRUB                    Sanitizes sensitive values before export
+  focus mode                  FOCUS-MODE               Action-first ADHD-friendly output; focus mode off deactivates
+
+6. Six rules you must not break
+
+Bootstrap is ALWAYS read-only — nothing is created or saved implicitly.
+
+Never edit the template or HarnessCore directly — projects are created by forking.
+
+A filename is NOT lineage evidence — parentage is verified inside the workbook.
+
+UNKNOWN is not PASS — at gates, unverified stays NOT_TESTED or BLOCKED.
+
+Persistent change only via CAPABILITY-ROUTER (copy-on-write / precopied / in-place).
+
+Output crosses the trust boundary only after SCRUB — no raw sensitive values.
+
+7. Persistence in a nutshell
+
+  Mode                    When it is used
+  ----------------------  ------------------------------------------------------------------------------------------
+  READ_ONLY               Default. No proof of write capability — read, analyze, save nothing.
+  ARTIFACT_COPY_ON_WRITE  In chat with an attached workbook: create -> write -> export -> reopen -> verify, then a new revision.
+  PRECOPIED_ARTIFACT      You create the next revision in Excel via Save a Copy and Copilot activates it after verification.
+  EXCEL_NATIVE_VERSIONING In an open workbook in Excel: in-place logical checkpoint, after proven direct edit.
+  WRITE_BLOCKED           Persistence requested but not proven -> nothing is written, you get a precise report.
+
+Important: a stored capability from a past session is NEVER inherited — every bootstrap re-derives runtime capability live.
+
+8. New project step by step
+
+1) Attach HarnessCore + ProjectTemplate, 2) type:
+
+load vch
+
+3) After bootstrap, enter (adjust the values):
+
+[skill: PROJECT-FORK]
+
+Create a new project from the attached project template.
+
+Project ID: DEMO-REPORT-AUTOMATION
+
+Project Name: Report Automation Improvement
+
+Owner: Jane Doe
+
+Main Goal: Create an auditable and production-ready recurring report automation process.
+
+If persistence capability is not proven, write nothing and return a precise WRITE_BLOCKED report.
+
+4) Open the created workbook in Excel and continue:
+
+guide project
+
+PROJECT-GUIDE then tells you on every turn: current phase, selected skill, gate status, missing prerequisite, one question with a recommended answer, and the next step.
+
+9. When something fails — quick dictionary
+
+  Message             What it means and what to do
+  ------------------  -----------------------------------------------------------------------------------------------
+  WRITE_BLOCKED       Copilot has no proof of write capability. Fix: precopied revision in Excel, or continue read-only.
+  VERSION_MISMATCH    The workbook has an older Template_Version. It loads read-only; ask for migration to the current template.
+  BLOCKED (gate)      A prerequisite for the next phase is missing. Answer the one blocking question — the guide continues on its own.
+  NOT_TESTED          Something was not verified — not a failure, but not proof either. Ask for VERIFICATION-CHECKLIST.
+  AMBIGUOUS_LINEAGE   Revision lineage does not add up. Return to the last verified revision and fork from it.
+  PRECONDITION_FAILED An input precondition is not met (e.g. precopied target is not SourceRevision+1).
+
+10. FAQ
+
+Do I have to use the exact trigger words?
+
+For guaranteed exact routing, yes — or use the explicit form [skill: SKILL-ID]. Otherwise Copilot routes semantically using each skill's Use_When rules, but exact atoms are deterministic.
+
+Copilot 'forgot' the harness. What now?
+
+Type load vch again. Keep HarnessCore permanently attached in the conversation — bootstrap is read-only and breaks nothing.
+
+Can I add my own skill?
+
+Yes, but as a governed change: a new row in 00_Skills, oracle update (SKILLCOUNT), an ADR record, then run harness_lint ps1. Otherwise the integrity check fails.
+
+How many projects at once?
+
+As many as you like. Each has its own workbook, revisions and __STATE. HarnessCore is shared by all of them.
+
+Where is the decision and work history?
+
+__ADR (architectural decisions), 09_Worklog (verified work), 08_SessionSummary (session overview), 04_Risks (risks).
+
+11. Migrating a project from an old version
+
+An old project in an old harness version is NEVER rewritten. Migration = fork into the new template and transfer verified content. Procedure:
+
+  #   Step          What you do
+  --  -------------  -----------------------------------------------------------------------------------------------------------
+  1   Diagnosis      Attach HarnessCore + the old workbook -> load vch. Bootstrap returns VERSION_MISMATCH and keeps the old workbook read-only. Correct.
+  2   Fork           Attach the current ProjectTemplate -> [skill: PROJECT-FORK] with the SAME metadata (ID, Name, Owner, Main Goal read from the old one).
+  3   Port content   Transfer only VERIFIED content (plan, tickets, worklog, session summary, scripts). Map by column names, not positions.
+  4   Verify         Reopen the new workbook -> verify fix. Set Resume_From and record the original artifact reference in Source_Refs.
+  5   Archive        Lock the old workbook and put it away. Never work in it again — the old line ends in the archive.
+  6   Further work   New workbook + HarnessCore -> guide project and PROJECT-GUIDE picks up.
+
+What is NOT transferred
+
+Runtime __STATE — initializes clean, PROJECT-FORK fills in identity.
+
+Capability — never inherited; every session re-derives it live.
+
+Oracle and Lists — they come new with the template (current rules and tests).
+
+Tip: with long worklogs, run a solution review (COMPOUND-REFRESH) right away — migration is the ideal moment for a KEEP/UPDATE/ARCHIVE cleanup. Do not migrate a dead project, just archive it.
+
+Golden rule: when in doubt, type bootstrap check or drift check. Both are read-only — you cannot break anything with them.
