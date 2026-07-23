@@ -6,7 +6,7 @@ A behavior harness for Microsoft Copilot in strict corporate environments: 41 sk
 
 Built for people stuck in locked-down enterprises where Copilot (or a similar LLM chat) is the *only* AI tool allowed.
 
-**Current version: v6.11.0** — adds FOCUS-MODE, an opt-in action-first output skill (ADHD-friendly) adapted from [ayghri/i-have-adhd](https://github.com/ayghri/i-have-adhd).
+**Current version: v6.11.0** — adds FOCUS-MODE, an opt-in action-first output skill (ADHD-friendly) adapted from [ayghri/i-have-adhd](https://github.com/ayghri/i-have-adhd). Filenames are version-independent (ADR-010); the version lives inside the artifacts and is reported by `load vch`.
 
 ## Why it exists
 
@@ -26,32 +26,32 @@ This harness fixes that with a set of sovereign safety rules the model must foll
 | **Evidence classes** | INDEPENDENT_READ_BACK vs. conversation claims vs. inference — self-report is not verification. |
 | **Persistence router** | Persistent change only via an evidenced mode: copy-on-write, precopied artifact, or in-place checkpoint. Otherwise READ_ONLY / WRITE_BLOCKED. |
 | **SCRUB** | No output crosses the trust boundary with raw sensitive values. |
-| **Deterministic lint** | Every DETERMINISTIC_SCAN check in the oracle has a real executable implementation in `tools/harness_lint_v6_11_0.ps1`. Exit code 0 or it doesn't ship. |
+| **Deterministic lint** | Every DETERMINISTIC_SCAN check in the oracle has a real executable implementation in `tools/harness_lint.ps1`. Exit code 0 or it doesn't ship. |
 
 ## Repository layout
 
 ```
 core/
-  VCH_HarnessCore_v6_11_0_FINAL.xlsx        # the brain: 41 skills, rules, oracle — attach as knowledge, never write to it
-  VCH_ProjectTemplate_v6_11_0_release.xlsx  # immutable project template — fork new projects from it
+  VCH_HarnessCore.xlsx        # the brain: 41 skills, rules, oracle — attach as knowledge, never write to it
+  VCH_ProjectTemplate.xlsx    # immutable project template — fork new projects from it
 copilot/
-  copilotstart_v6_11_0_FINAL.txt            # session starter instructions — attach with HarnessCore
-  copilot_custom_instructions_v6_11_0_FINAL.txt  # paste into Copilot Custom Instructions (one-time)
+  copilotstart.txt            # session starter instructions — attach with HarnessCore
+  copilot_custom_instructions.txt  # paste into Copilot Custom Instructions (one-time)
 tools/
-  harness_lint_v6_11_0.ps1                  # integrity validator (PowerShell 5.1+, ImportExcel module)
+  harness_lint.ps1            # integrity validator (PowerShell 5.1+, ImportExcel module)
 docs/
-  VCH_Cheatsheet_v6_11_0_EN.txt             # usage cheatsheet — hand this to your colleagues
+  VCH_Cheatsheet_EN.txt       # usage cheatsheet — hand this to your colleagues
 ```
 
 ## Quick start (5 minutes)
 
-1. Paste `copilot/copilot_custom_instructions_v6_11_0_FINAL.txt` into your Copilot custom instructions (one-time).
-2. In a Copilot chat, attach `VCH_HarnessCore_v6_11_0_FINAL.xlsx` + `copilotstart_v6_11_0_FINAL.txt` (+ the project template if starting a new project).
+1. Paste `copilot/copilot_custom_instructions.txt` into your Copilot custom instructions (one-time).
+2. In a Copilot chat, attach `VCH_HarnessCore.xlsx` + `copilotstart.txt` (+ the project template if starting a new project).
 3. Type: `load vch` -> read-only bootstrap reports version, 41 skills, capabilities, resume point.
 4. Start a project: `[skill: PROJECT-FORK]` with Project ID, Name, Owner, Main Goal -> creates your `v001` project workbook.
 5. Work: `guide project` -> PROJECT-GUIDE picks one specialist skill per step, enforces phase gates, and only persists through verified modes.
 
-Full daily-driver guide with commands, failure dictionary and migration playbook: **`docs/VCH_Cheatsheet_v6_11_0_EN.txt`**.
+Full daily-driver guide with commands, failure dictionary and migration playbook: **`docs/VCH_Cheatsheet_EN.txt`**.
 
 ## Everyday commands
 
@@ -97,7 +97,7 @@ Changing the harness is a governed change:
 
 ```powershell
 Install-Module ImportExcel -Scope CurrentUser   # once
-.\tools\harness_lint_v6_11_0.ps1 -Path .\core\VCH_HarnessCore_v6_11_0_FINAL.xlsx, .\core\VCH_ProjectTemplate_v6_11_0_release.xlsx
+.\tools\harness_lint.ps1 -Path .\core\VCH_HarnessCore.xlsx, .\core\VCH_ProjectTemplate.xlsx
 ```
 
 The lint executes every DETERMINISTIC_SCAN declared in `__TEST_ORACLE`: skill count, version agreement, trigger duplicates/prefix collisions, non-ASCII cells, chain resolution, enum declarations, state schema, probe cell, and more.
