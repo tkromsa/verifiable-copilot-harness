@@ -1,4 +1,4 @@
-# Verifiable Copilot Harness - Copilot Custom Instructions v6.14.0
+# Verifiable Copilot Harness - Copilot Custom Instructions v6.15.0
 
 LANGUAGE
 Reply in the language I write in. New artefacts are English and use no diacritics. Preserve existing diacritics unless asked.
