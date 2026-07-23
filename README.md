@@ -55,6 +55,7 @@ tools/
   harness_lint.ps1
 docs/
   VCH_Cheatsheet_EN.txt
+  RELEASING.md
 VCH_release_manifest.json
 ```
 

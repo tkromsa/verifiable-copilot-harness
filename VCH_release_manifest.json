@@ -23,9 +23,13 @@
         "bytes": 12072,
         "sha256": "f1a8ddf2d92c06fcf2d1fc27da9330c6daab8244ab907e4bc63fb84bc3bacb5a"
     },
+    "docs/RELEASING.md": {
+        "bytes": 4609,
+        "sha256": "e5e9ddeac7e561ed1a1498d3a893b19dc318ca7a826efe93ed99e5d7568a118c"
+    },
     "README.md": {
-        "bytes": 10041,
-        "sha256": "b230201ee93ff606f26735f7f6c810f05f687aaee634288aca5373edd0dd2374"
+        "bytes": 10056,
+        "sha256": "1c11aac2e576fca5edf1e616ace57a221ccdb8a586ae36c09bf0f5e6d761f6f8"
     },
     "LICENSE": {
         "bytes": 1096,
