@@ -114,9 +114,9 @@ The harness is model-agnostic: it was iterated across several LLMs (Copilot/GPT,
 
 Standing on the shoulders of the open agent-skills community — thanks for the ideas, patterns and prior art:
 
-- **obra / Superpowers** — the original Claude skills harness that proved skills-in-files work
-- **GrillMe** — adversarial requirement-grilling pattern
-- **Shaping Skills** — skill-shape design ideas
+- **[obra/superpowers](https://github.com/obra/superpowers)** — the original skills harness that proved skills-in-files work
+- **[Grill Me — mattpocock/skills](https://github.com/mattpocock/skills/blob/main/skills/productivity/grill-me/SKILL.md)** — adversarial requirement-grilling pattern (one question at a time)
+- **[rjs/shaping-skills](https://github.com/rjs/shaping-skills)** — skill-shape design ideas
 - **Gentle AI** — human-in-the-loop agent workflows
 - **[ayghri/i-have-adhd](https://github.com/ayghri/i-have-adhd)** — ADHD-friendly output rules adapted as FOCUS-MODE
 
