@@ -154,16 +154,22 @@ the repo).
 
 ## Phase 7 — Gates and acceptance
 
-- [ ] STRUCTURAL_GATE: `harness_lint.ps1` PASS on the new core workbook.
-- [ ] FORK_GATE (new): lint a freshly forked v001 against `__DELIVERY_SCHEMA` — PASS.
-- [ ] BEHAVIORAL_ROUTING_GATE: all routing fixtures in isolated contexts — PASS,
-      zero Critical=YES mismatches.
+Executable procedure: `docs/RUNBOOK_v0.7.0_gates.md` (preconditions, per-step verifies,
+rollback, escalation — written per the RUNBOOK skill format).
+
+- [ ] STRUCTURAL_GATE: `harness_lint.ps1` PASS on the new core workbook (runbook step 1).
+- [ ] FORK_GATE: lint a freshly forked v001 against `__DELIVERY_SCHEMA` (runbook step 1.3;
+      already PASS via Python simulation, needs the Windows COM run).
+- [ ] BEHAVIORAL_ROUTING_GATE: all 55 fixtures in isolated contexts — PASS,
+      zero Critical=YES mismatches; watch RT-031, AV-002, AV-009 (runbook step 2).
 - [ ] Manual smoke test in real Copilot: attach core + starter, `load vch`,
       `new project`, verify v001 contains 9 generated delivery sheets, verify NEXT footer
       appears on ordinary replies and Status Card on lifecycle events.
 - [ ] UAT: the "colleague from another department" test — give her only the new quick
       start; she must get from zero to a working session without asking which file
-      to attach or which mode she is in.
+      to attach or which mode she is in (runbook step 3).
+- [ ] Promotion: flip ADR-016/017/018 to Accepted, regenerate manifest, prerelease ->
+      full release (runbook step 4).
 
 ## Do-not-forget checklist (things easy to miss)
 
