@@ -118,19 +118,23 @@ the whole repo is now pure ASCII in text files).
 
 ## Phase 5 — GitHub release + wiki
 
-- [ ] Tag `v0.7.0`; release notes MUST explain the renumbering (6.15.1 -> 0.7.0) so
-      existing users are not confused; link ADR-016.
-- [ ] Decide fate of old v6.x tags/releases: keep (recommended, with a deprecation note)
-      or delete.
-- [ ] Wiki — Home: version badge, quick start (single attach), repository layout,
-      "43 skills" count check, golden rule wording (still one active workbook — simpler now).
-- [ ] Wiki — Usage Guide: rewrite modes chapter (3 modes), delete PROJECT-CREATION
-      workflow, update fork workflow (sheets generated at fork), persistence chapter
-      (unchanged behavior, new mode names), add NEXT footer documentation.
-- [ ] Wiki — Skills Reference: regenerate the 43-skill table with new Allowed_Modes
-      values (PROJECT-FORK, PROJECT-GUIDE changed).
-- [ ] Wiki — Release & Integrity: lint invocation (single workbook), manifest contents,
-      delivery-schema check, ADR list updated.
+DONE 2026-07-25. Main repo pushed as 987d95b; wiki pushed as 70701dc.
+
+- [x] Commit + push to `main`: `v0.7.0: single-kernel simplification (ADR-016, ADR-017,
+      ADR-018)`; `samples/` gitignored (generated, reproducible).
+- [x] Release `v0.7.0` created as PRERELEASE (honest: structural + behavioral gates still
+      NOT_TESTED — they need Windows/Excel and real Copilot runs). Notes explain the
+      renumbering, link the ADRs, quote the gates status. `docs/release_notes_v0.7.0.md`
+      kept in the repo.
+- [x] Old v6.x tags/releases: KEPT (release notes + wiki explain the renumbering).
+- [x] Wiki — Home: v0.7.0 badge + renumbering callout, single-attach quick start, layout
+      without template, NEXT footer in the failure-mode table and help section.
+- [x] Wiki — Usage Guide: 3 modes, fork workflow with generated sheets, NEXT footer
+      section, Schema_Version, migration via kernel, 2 new FAQ entries.
+- [x] Wiki — Skills Reference: PROJECT-FORK row and mode-restriction list updated.
+- [x] Wiki — Release & Integrity: single-workbook lint + v001 invocation, kernel-trap,
+      manifest contents, renumbering versioning rule.
+- [x] Repo metadata: description checked — version-agnostic, still accurate; no change.
 
 ## Phase 6 — Kimi-side skill sync (separate from the repo, do not forget)
 
