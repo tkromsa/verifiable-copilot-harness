@@ -138,10 +138,19 @@ DONE 2026-07-25. Main repo pushed as 987d95b; wiki pushed as 70701dc.
 
 ## Phase 6 — Kimi-side skill sync (separate from the repo, do not forget)
 
-- [ ] Local vch-* skills are at v6.11.0 while the repo is at v6.15.1 — they drifted even
-      before this change. After v0.7.0 ships, regenerate/update all 43 SKILL.md files and
-      `vch-core/references/harness-rules.md` to match the v0.7.0 catalog
-      (modes, chaining, NEXT footer, version strings).
+DONE 2026-07-25 via `tools/sync_kimi_skills.py` (committed to the repo, re-runnable).
+Backup of the old v6.11.0 skills: `vch-skills-backup-v6.11.0.tar.gz` (workspace, outside
+the repo).
+
+- [x] All 43 catalog skills regenerated as vch-<skill-id>/SKILL.md from the v0.7.0
+      workbook (41 updated, 2 created: vch-status, vch-capability-discovery — missing
+      locally since v6.14.0).
+- [x] `vch-core/SKILL.md`: v0.7.0, 43 skills, NEXT footer section, delivery-schema
+      reference; Kimi-specific file-host sections preserved.
+- [x] `vch-core/references/`: all 9 files regenerated from v0.7.0 sheets, incl. the new
+      `delivery-schema.md`; historical ADR wording intentionally kept.
+- [x] Verified: 44 vch dirs (43 skills + vch-core), zero v6.11.0/v6.15 strings outside
+      historical ADR entries, zero mode leftovers.
 
 ## Phase 7 — Gates and acceptance
 
