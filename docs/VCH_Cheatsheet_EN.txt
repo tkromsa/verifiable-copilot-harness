@@ -1,66 +1,51 @@
-Verifiable Copilot Harness - Quick Use Guide v6.15.0
+Verifiable Copilot Harness - Quick Use Guide v0.7.0
 
 WHAT IT IS
-A governed set of 43 skills and verification rules for Copilot work. It supports lightweight non-project work, controlled project creation and self-contained project workbooks without requiring every VCH file in every session. From v6.13.0 it also carries an embedded, out-of-bootstrap behavioral regression corpus (__ROUTING_ORACLE).
+A governed set of 43 skills and verification rules for Copilot work. One kernel workbook carries the complete behavior catalog plus the canonical delivery-sheet schema; project workbooks are self-contained forks of it. An embedded, out-of-bootstrap behavioral regression corpus (__ROUTING_ORACLE) guards routing quality. Version 0.7.0 is a renumbering from the 6.x line (ADR-016), not a downgrade.
 
 THE CORE IDEA
 Normal operation uses one active workbook.
 - HARNESS MODE
 File: VCH_HarnessCore.xlsx
 Use: Everyday non-project work, analysis, debugging, planning and skill-driven tasks.
-Result: No project workbook is created unless you later add the template and explicitly request PROJECT-FORK.
-- TEMPLATE MODE
-File: VCH_ProjectTemplate.xlsx
-Use: Start a project directly.
-Result: PROJECT-FORK creates revision 001. The template remains immutable.
-- PROJECT-CREATION MODE
-Files: VCH_HarnessCore.xlsx + VCH_ProjectTemplate.xlsx
-Use: Convert useful non-project work into a governed project.
-Result: The template is the physical fork source. Compatible duplicate behavior is validated but read only once.
+Result: No project workbook is created unless you explicitly request PROJECT-FORK.
 - PROJECT MODE
 File: Current <Project_ID>_<Safe_Project_Name>_vNNN.xlsx
 Use: Continue an existing project.
-Result: The project workbook is self-contained. Core and template are not required for normal continuation.
+Result: The project workbook is self-contained. The kernel is not required for normal continuation.
 - MIGRATION MODE
-Files: Old project workbook + current VCH_ProjectTemplate.xlsx
+Files: Old project workbook + current VCH_HarnessCore.xlsx
 Use: Move verified project content to the current schema.
-Result: The old project remains read-only. A new project line is created from the current template.
+Result: The old project remains read-only. A new project line is forked from the current kernel.
 
 FILES
 VCH_HarnessCore.xlsx
-- Complete behavior-only kernel: rules, 43 skills, oracle, routing oracle, state schema, lists, ADR and glossary.
-- Never use as a project state anchor.
-- Never write project delivery content into it.
-VCH_ProjectTemplate.xlsx
-- Immutable standalone project starter.
-- Contains the complete behavior snapshot, routing oracle and project delivery sheets.
-- Physical source for PROJECT-FORK.
+- The single kernel: rules, 43 skills, oracle, routing oracle, delivery schema, state schema, lists, ADR and glossary.
+- Immutable: never use as a project state anchor and never write project delivery content into it.
+- __DELIVERY_SCHEMA inside it defines the nine project delivery sheets; PROJECT-FORK generates them into revision 001.
 Current project workbook
 - Revision 001 or higher.
 - Contains the behavior snapshot, project identity, state and delivery content.
 - Default active workbook after the fork.
 copilotstart.txt
-- Runtime contract for mode selection, bootstrap, persistence, evidence and the routing oracle.
+- Runtime contract for mode selection, bootstrap, persistence, evidence, the routing oracle and the NEXT footer.
 copilot_custom_instructions.txt
 - Paste once into Copilot Custom Instructions.
 - Holds compact always-on invariants and workbook mode selection.
 harness_lint.ps1
-- Integrity validator for harness and template changes.
-- Not required for normal project delivery unless the harness or template itself is changed.
+- Integrity validator for harness changes, including the delivery schema and the v001 fork check.
+- Not required for normal project delivery unless the harness itself is changed.
 
 DAILY START
 Non-project work:
 - Attach VCH_HarnessCore.xlsx.
 - Type: load vch
 - Use a skill or ask normally.
-Start a project directly:
-- Attach VCH_ProjectTemplate.xlsx.
+Start a project:
+- Attach VCH_HarnessCore.xlsx.
 - Type: load vch
 - Type [skill: PROJECT-FORK] and provide Project ID, Project Name, Owner and Main Goal.
-Convert current work into a project:
-- Keep VCH_HarnessCore.xlsx available and attach VCH_ProjectTemplate.xlsx.
-- Type [skill: PROJECT-FORK] with complete project metadata.
-- After verified revision 001 is created, use only the new project workbook for normal continuation.
+- PROJECT-FORK generates the delivery sheets from __DELIVERY_SCHEMA into revision 001.
 Continue a project:
 - Attach only the current verified project workbook and files needed for the current task.
 - Type: load vch
@@ -68,8 +53,7 @@ Continue a project:
 
 SOURCE SELECTION RULES
 - Explicit binary attachment beats Work IQ search results for editing and persistence.
-- Current project workbook beats template for project continuation.
-- Template beats core as the physical fork source.
+- A current project workbook beats the kernel for project continuation.
 - Older revisions are lineage evidence only when requested.
 - Multiple possible current revisions return AMBIGUOUS_LINEAGE. Filename recency alone is not proof.
 
@@ -86,7 +70,7 @@ The read-only bootstrap reports:
 - Host_Mode
 - Capability manifest
 - Persistence_Mode
-The bootstrap read-set is Project.Rules, 00_Landing, __STATE, 00_Skills, __TEST_ORACLE, __ADR and __GLOSSARY. __ROUTING_ORACLE is NOT read on load.
+The bootstrap read-set is Project.Rules, 00_Landing, __STATE, 00_Skills, __TEST_ORACLE, __ADR and __GLOSSARY. __ROUTING_ORACLE and __DELIVERY_SCHEMA are NOT read on load.
 
 PRIMARY COMMANDS
 load vch
@@ -95,7 +79,7 @@ load vch
 guide project / what next
 - PROJECT-GUIDE selects one specialist skill and checks phase gates.
 new project / project fork
-- PROJECT-FORK creates revision 001 from the template.
+- PROJECT-FORK creates revision 001 from the kernel with generated delivery sheets.
 save revision / commit revision / persist changes
 - REVISION-COMMIT creates the next verified physical revision where supported.
 write plan
@@ -126,17 +110,27 @@ what can you do / available skills
 run routing oracle
 - Behavioral regression run of __ROUTING_ORACLE (not a formal trigger; explicit request only).
 
+NEXT FOOTER (what to do next, every reply)
+- Every reply that does not end with a Status Card ends with exactly one line:
+  NEXT: <one concrete action> ([skill: SKILL-ID])   or   NEXT: none
+- The recommended skill comes only from the May_Chain_To chain of the skill just used, filtered by Allowed_Modes for the current mode. Never from inference.
+- A recommendation is a proposal. Chaining never happens automatically; you always invoke the next skill explicitly.
+- If the chain is NONE: in PROJECT mode the footer proposes update context, otherwise none.
+- No footer after purely informational answers, SCRUB output, focus toggling or routing oracle runs.
+- Lifecycle replies (load, guide step, gate, commit, status) carry the recommendation inside the Status Card instead:
+  Next: <action> | Skill: [skill: SKILL-ID] or none | Why: <short clause>
+
 ROUTING ORACLE (behavioral regression, out-of-bootstrap)
-- Lives in the __ROUTING_ORACLE sheet inside the behavior source, next to __TEST_ORACLE, but is never read on load and never runs automatically.
+- Lives in the __ROUTING_ORACLE sheet inside the kernel, next to __TEST_ORACLE, but is never read on load and never runs automatically.
 - Two layers, one sheet, one Layer column:
   L2 (routing correctness): exact triggers, alt atoms, explicit [skill: ID], prefix pasti (script review vs review), precedence tie-break, guards (WRITE_BLOCKED), ambiguity, focus mode, negative and chain checks.
-  L3 (adversarial / safe failure): write-trap, template-trap, SCRUB-completeness, probe-trap, precopy precondition, enum injection, capability inheritance, ambiguous lineage, version mismatch, self-report, character policy, duplicate catalog.
+  L3 (adversarial / safe failure): write-trap, kernel-trap, SCRUB-completeness, probe-trap, precopy precondition, enum injection, capability inheritance, ambiguous lineage, version mismatch, self-report, character policy, duplicate catalog.
 - How to run: on explicit request or before promoting a catalogue change, feed each Input_Utterance in an isolated context and compare the produced Skill_ID and verdict to the frozen Expected_Skill_ID and Expected_Verdict. Optionally run the same corpus on two models (A/B) against identical expected values; a disagreement flags a routing ambiguity.
 - Scoring: PASS when skill and verdict both match; PARTIAL when only the skill matches; FAIL on the wrong skill. A FAIL on any Critical=YES GUARD or L3 row is release-blocking.
 - What the lint does vs does not: harness_lint checks only structure (every Expected_Skill_ID is NONE or an existing Skill_ID; every Test_ID is unique). It never asserts the routing decision. The routing decision is a behavioral test executed by the model.
 
 FROZEN ORACLE (structural)
-- __TEST_ORACLE remains the structural gate: SKILLCOUNT=43, version agreement, trigger duplicates and prefix collisions, non-ASCII, chains, enums, state, probe cell, mode, plus three ROUTING structural rows (present, unresolved skill refs, duplicate Test_ID).
+- __TEST_ORACLE remains the structural gate: SKILLCOUNT=43, version agreement, trigger duplicates and prefix collisions, non-ASCII, chains, enums, state, probe cell, mode, ROUTING structural rows (present, unresolved skill refs, duplicate Test_ID) and the DELIVERY schema row (delivery schema present and complete).
 
 PERSISTENCE MODES
 READ_ONLY
@@ -151,8 +145,8 @@ WRITE_BLOCKED
 - Persistence was requested but the required capability or prerequisite was not proven.
 
 NON-NEGOTIABLE RULES
-- Bootstrap is always read-only and never reads __ROUTING_ORACLE.
-- Never edit HarnessCore or ProjectTemplate for project delivery.
+- Bootstrap is always read-only and never reads __ROUTING_ORACLE or __DELIVERY_SCHEMA.
+- Never edit the immutable HarnessCore kernel for project delivery.
 - Filename alone is not lineage evidence.
 - UNKNOWN is not PASS.
 - Stored capability is never inherited as current runtime capability.
@@ -161,7 +155,7 @@ NON-NEGOTIABLE RULES
 
 NEW PROJECT EXAMPLE
 [skill: PROJECT-FORK]
-Create a new project from the attached project template.
+Create a new project from the attached kernel.
 Project ID: DEMO-REPORT-AUTOMATION
 Project Name: Report Automation Improvement
 Owner: Jane Doe
@@ -169,24 +163,24 @@ Main Goal: Create an auditable and production-ready recurring report automation 
 If persistence capability is not proven, write nothing and return WRITE_BLOCKED.
 
 MIGRATION
-- Attach the old project workbook and current VCH_ProjectTemplate.xlsx.
+- Attach the old project workbook and the current VCH_HarnessCore.xlsx.
 - Type: load vch
 - Expect VERSION_MISMATCH when versions differ; this is read-only.
-- Fork from the current template with the same verified project metadata.
+- Fork from the current kernel with the same verified project metadata.
 - Port only verified project content by field or column identity.
 - Reopen, verify, set Resume_From and archive the old project line.
 
 DO NOT TRANSFER DURING MIGRATION
 - Runtime capability state.
 - Unverified attempts as verified work.
-- Old oracle or Lists over the current template.
+- Old oracle or Lists over the current kernel.
 - Ambiguous lineage.
 
 COMMON STATUS VALUES
 WRITE_BLOCKED
 - Persistence is not proven. Continue read-only or provide a valid persistence path.
 VERSION_MISMATCH
-- Loaded workbook uses an older Template_Version. Perform controlled migration.
+- Loaded workbook uses an older Schema_Version (Template_Version in pre-0.7.0 artifacts). Perform controlled migration.
 SCHEMA_MISMATCH
 - Required structure or critical behavior identity differs. Keep the transition read-only.
 AMBIGUOUS_LINEAGE
@@ -200,13 +194,11 @@ PRECONDITION_FAILED
 
 FAQ
 Do I always attach HarnessCore?
-No. Attach HarnessCore for non-project work. Use the template to start a project. After revision 001 exists, use the current project workbook for normal continuation.
-Can the template be used without HarnessCore?
-Yes. The template contains the complete behavior catalog, routing oracle and delivery schema. It is a standalone project starter.
+No. Attach HarnessCore for non-project work and to start a project. After revision 001 exists, use the current project workbook for normal continuation.
+How do delivery sheets get into a project?
+PROJECT-FORK generates 01_Plan through 09_Worklog from the __DELIVERY_SCHEMA sheet embedded in the kernel. The kernel stays immutable; the forked v001 is verified against the schema.
 Why does the project workbook contain the skills and rules?
 It preserves a self-contained behavior snapshot for auditability, recovery and controlled migration.
-What happens if Core and Template are both present?
-This is PROJECT-CREATION MODE. The template is the physical fork source. Compatible duplicate behavior is checked but not concatenated.
 Does the routing oracle slow down load vch?
 No. __ROUTING_ORACLE is out of the bootstrap read-set. It is read only when you explicitly run it or before promoting a catalogue change.
 Is the routing oracle a one-off test?
@@ -215,12 +207,16 @@ What if Copilot finds older revisions through Work IQ?
 An explicitly attached current workbook remains the preferred editable artifact. Older revisions are used only when lineage, migration or comparison requires them.
 Copilot forgot the harness. What now?
 Attach the correct active workbook for the intended mode and type: load vch
+I am lost mid-task. What now?
+Read the NEXT footer at the end of the last reply, or type: status
 Can I add a skill?
 Yes, as a governed harness change: add the 00_Skills row, update SKILLCOUNT and documentation, add an ADR, add matching __ROUTING_ORACLE rows, run harness_lint.ps1 and a routing run, and promote only after deterministic checks and the routing run pass.
+Why did the version jump from 6.15.1 to 0.7.0?
+It is a renumbering (ADR-016): the harness is pre-1.0 software and the versioning now says so. The 6.x line ends at v6.15.1; old tags and releases remain available.
 
 GOLDEN RULE
 Use one active workbook in normal operation. Use multiple workbooks only at a controlled transition boundary.
 RELEASE GATES
-- Run harness_lint.ps1 against both workbooks.
+- Run harness_lint.ps1 against the kernel workbook; after fork-flow changes, also against a freshly generated v001.
 - Run all __ROUTING_ORACLE rows in isolated contexts; apply Fixture_Context and Candidate_Skill_Set for synthetic tie tests.
 - Structural PASS never implies routing PASS. Any Critical=YES mismatch blocks catalogue promotion.

@@ -1,35 +1,31 @@
 {
     "core/VCH_HarnessCore.xlsx": {
-        "bytes": 51146,
-        "sha256": "53992683157d599bf8bfe0d3206c1381f93dbc5f6cf08b55c24af8355b35fcf3"
-    },
-    "core/VCH_ProjectTemplate.xlsx": {
-        "bytes": 57798,
-        "sha256": "b62942b1521dbf46c4c9330458908d412206a7f5510c95cdbe60872fcbc0344d"
+        "bytes": 48565,
+        "sha256": "096a0b425f97ee1d1246e3ca34be57ee087047fdbc173a9ccd5711252aca352b"
     },
     "copilot/copilotstart.txt": {
-        "bytes": 5809,
-        "sha256": "7a3f02135dfe5e738a500f725c6efac1d26f5615f86e98bcd47a792649fc1d39"
+        "bytes": 6426,
+        "sha256": "2463a8f4c342b71af830e28a9a64a32569b3064571494c6ffe2436735054a721"
     },
     "copilot/copilot_custom_instructions.txt": {
-        "bytes": 9052,
-        "sha256": "878448dcd54a21e402cf70a041bcbacd7cf92dce3acecd8d0c8fedce961c88d3"
+        "bytes": 9751,
+        "sha256": "727677c52fa408c0310630f0c6263978cd32b7e8c3781b4a96ed079f127fa86f"
     },
     "tools/harness_lint.ps1": {
-        "bytes": 13845,
-        "sha256": "944ac5ca5277216aa85d06dd27b23b2d1934f993bf6843a69a3ee433927fe60c"
+        "bytes": 16705,
+        "sha256": "79ae7117779db2c7b90c12e50f42f0a633c6f89454d5123c71234fc6f4b38cf6"
     },
     "docs/VCH_Cheatsheet_EN.txt": {
-        "bytes": 12072,
-        "sha256": "f1a8ddf2d92c06fcf2d1fc27da9330c6daab8244ab907e4bc63fb84bc3bacb5a"
+        "bytes": 12655,
+        "sha256": "5afa32779b21643d5d62caf1ef37dbd5d831c919486c7e82737a0563c039da34"
     },
     "docs/RELEASING.md": {
-        "bytes": 4609,
-        "sha256": "e5e9ddeac7e561ed1a1498d3a893b19dc318ca7a826efe93ed99e5d7568a118c"
+        "bytes": 5061,
+        "sha256": "57d084a14d733d27cb150df81edf85cff5df2b1f29982790183598009a5f72f1"
     },
     "README.md": {
-        "bytes": 10056,
-        "sha256": "1c11aac2e576fca5edf1e616ace57a221ccdb8a586ae36c09bf0f5e6d761f6f8"
+        "bytes": 11085,
+        "sha256": "ae391317ec61386a9c401750ad934e9590afec7343d17d0c74e3097cfb011c37"
     },
     "LICENSE": {
         "bytes": 1096,

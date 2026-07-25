@@ -7,16 +7,20 @@ param(
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
-$ExpectedVersion = 'v6.15.1'
+$ExpectedVersion = 'v0.7.0'
 $ExpectedSkillCount = 43
 $ExpectedRoutingCount = 55
 $RequiredSheets = @(
     '00_Skills', 'Project.Rules', '__STATE', '__TEST_ORACLE',
-    'Lists', '__ADR', '__GLOSSARY', '__ROUTING_ORACLE'
+    'Lists', '__ADR', '__GLOSSARY', '__ROUTING_ORACLE', '__DELIVERY_SCHEMA'
 )
-$ValidModes = @('HARNESS', 'TEMPLATE', 'PROJECT-CREATION', 'PROJECT', 'MIGRATION')
+$ValidModes = @('HARNESS', 'PROJECT', 'MIGRATION')
+$ExpectedDeliverySheets = @(
+    '01_Plan', '02_Tickets', '03_Tasks', '04_Risks', '05_Script',
+    '06_API_Reference', '07_Deployment', '08_SessionSummary', '09_Worklog'
+)
 $ExpectedStateFields = @(
-    'Harness version', 'File_Role', 'Template_Version', 'Project_ID', 'Project_Safe_Name',
+    'Harness version', 'File_Role', 'Schema_Version', 'Project_ID', 'Project_Safe_Name',
     'Revision', 'Logical_Revision', 'Revision_Type', 'Parent_Artifact', 'Current_Artifact',
     'Active_Artifact', 'Physical_Artifact', 'Physical_Artifact_Changed', 'Artifact_Status',
     'Created_From', 'Last_Export_Verified', 'Output_Verification_Status', 'Host_Mode',
@@ -99,6 +103,58 @@ function Assert-NoStaleProbeAddress {
                     throw "Stale active B32 probe instruction in ${SheetName}!R${Row}C${Column}"
                 }
             }
+        }
+    }
+}
+
+function Test-DeliverySchema {
+    param($Workbook, [string[]]$SheetNames)
+
+    $Schema = $Workbook.Worksheets.Item('__DELIVERY_SCHEMA').UsedRange.Value2
+    $SchemaHeader = Get-Headers -Values $Schema -FirstHeader 'Sheet_Name'
+    $SchemaHeaders = $SchemaHeader.Map
+    Assert-RequiredHeaders -Headers $SchemaHeaders -Required @('Sheet_Name', 'Title_Cell_A1', 'Header_Row')
+
+    $Definitions = @{}
+    for ($Row = $SchemaHeader.Row + 1; $Row -le $Schema.GetLength(0); $Row++) {
+        $Name = [string]$Schema[$Row, $SchemaHeaders.Sheet_Name]
+        if (-not $Name) { continue }
+        if ($Definitions.ContainsKey($Name)) { throw "Duplicate delivery sheet definition: $Name" }
+        $Definitions[$Name] = [pscustomobject]@{
+            Title  = [string]$Schema[$Row, $SchemaHeaders.Title_Cell_A1]
+            Header = [string]$Schema[$Row, $SchemaHeaders.Header_Row]
+        }
+    }
+    foreach ($Name in $ExpectedDeliverySheets) {
+        if (-not $Definitions.ContainsKey($Name)) { throw "Missing delivery sheet definition: $Name" }
+        if (-not $Definitions[$Name].Title -or -not $Definitions[$Name].Header) {
+            throw "Incomplete delivery sheet definition: $Name"
+        }
+    }
+    if ($Definitions.Count -ne $ExpectedDeliverySheets.Count) {
+        throw "Delivery schema defines $($Definitions.Count) sheets, expected $($ExpectedDeliverySheets.Count)"
+    }
+
+    # Forked-workbook check: if any delivery sheet exists in this workbook, all nine
+    # must exist and their title cell and header row must match the schema exactly.
+    $Present = @($ExpectedDeliverySheets | Where-Object { $SheetNames -contains $_ })
+    if ($Present.Count -eq 0) { return }  # behavior kernel: nothing more to check
+    if ($Present.Count -ne $ExpectedDeliverySheets.Count) {
+        throw "Incomplete fork: $($Present.Count) of $($ExpectedDeliverySheets.Count) delivery sheets present"
+    }
+    foreach ($Name in $ExpectedDeliverySheets) {
+        $Values = $Workbook.Worksheets.Item($Name).UsedRange.Value2
+        $Title = [string]$Values[1, 1]
+        if ($Title -ne $Definitions[$Name].Title) {
+            throw "Delivery sheet ${Name}: title '$Title' != schema '$($Definitions[$Name].Title)'"
+        }
+        $HeaderCells = @()
+        for ($Column = 1; $Column -le $Values.GetLength(1); $Column++) {
+            $Cell = [string]$Values[2, $Column]
+            if ($Cell) { $HeaderCells += $Cell }
+        }
+        if (($HeaderCells -join ', ') -ne $Definitions[$Name].Header) {
+            throw "Delivery sheet ${Name}: header row does not match schema"
         }
     }
 }
@@ -208,7 +264,7 @@ function Test-Workbook {
             if (-not $StateMap.ContainsKey($Field)) { throw "Missing state field: $Field" }
         }
         if ($StateMap['Harness version'] -ne $ExpectedVersion) { throw 'State Harness version mismatch' }
-        if ($StateMap['Template_Version'] -ne $ExpectedVersion) { throw 'State Template_Version mismatch' }
+        if ($StateMap['Schema_Version'] -ne $ExpectedVersion) { throw 'State Schema_Version mismatch' }
         if ($StateMap['Next_Recommended_Skill'] -ne 'NONE' -and $SkillIds -notcontains $StateMap['Next_Recommended_Skill']) {
             throw "Invalid Next_Recommended_Skill: $($StateMap['Next_Recommended_Skill'])"
         }
@@ -284,11 +340,12 @@ function Test-Workbook {
 
         Assert-PrintableAscii -Workbook $Workbook -SheetNames @(
             '00_Skills', 'Project.Rules', '__STATE', '00_Landing', '__TEST_ORACLE',
-            'Lists', '__ADR', '__GLOSSARY', '__ROUTING_ORACLE'
+            'Lists', '__ADR', '__GLOSSARY', '__ROUTING_ORACLE', '__DELIVERY_SCHEMA'
         )
         Assert-NoStaleProbeAddress -Workbook $Workbook
+        Test-DeliverySchema -Workbook $Workbook -SheetNames $SheetNames
 
-        Write-Host "PASS $FullPath skills=43 routing=55 probe=B31 modes=ok" -ForegroundColor Green
+        Write-Host "PASS $FullPath skills=43 routing=55 probe=B31 modes=ok delivery-schema=ok" -ForegroundColor Green
         return [pscustomobject]@{ Path = $FullPath; Result = 'PASS'; Error = $null }
     }
     catch {

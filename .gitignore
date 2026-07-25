@@ -10,3 +10,6 @@ desktop.ini
 # Editor / tooling
 .vscode/
 .idea/
+
+# Generated fork-gate samples (rebuild via tools/build_v001_sample.py)
+samples/

@@ -1,6 +1,6 @@
 # VCH Release Checklist
 
-How to cut a new VCH release (e.g. v6.16.0) without creating inconsistencies between the workbooks, README, manifest, tag, release and wiki.
+How to cut a new VCH release (e.g. v0.7.1) without creating inconsistencies between the workbook, README, manifest, tag, release and wiki.
 
 > This whole procedure can be delegated to an AI agent with GitHub CLI access (`gh auth login`, scope `repo`). Steps marked 🤖 are agent-friendly; steps marked 🪟 require Windows + desktop Excel.
 
@@ -14,20 +14,28 @@ How to cut a new VCH release (e.g. v6.16.0) without creating inconsistencies bet
 
 ## 1. Make the change
 
-- Apply the catalog / schema / rule change to the workbooks.
+- Apply the catalog / schema / rule change to the workbook.
 - Record an **ADR** in the workbook (`__ADR` sheet).
 - Update `SKILLCOUNT` if skills were added or removed.
 - Add or update `__ROUTING_ORACLE` fixtures for any new or changed trigger / precedence.
+- If delivery sheets change, update `__DELIVERY_SCHEMA` — never edit generated v001 sheets directly.
 
 ## 2. Structural gate 🪟
 
 ```powershell
-.\tools\harness_lint.ps1 -Path `
-  .\core\VCH_HarnessCore.xlsx, `
-  .\core\VCH_ProjectTemplate.xlsx
+.\tools\harness_lint.ps1 -Path .\core\VCH_HarnessCore.xlsx
 ```
 
-- Must exit `0` with `PASS` on **both** workbooks.
+- Must exit `0` with `PASS` on the kernel workbook.
+- When the fork flow changed, also lint a freshly generated v001 — the lint validates
+  its delivery sheets against `__DELIVERY_SCHEMA`:
+
+```powershell
+.\tools\harness_lint.ps1 -Path `
+  .\core\VCH_HarnessCore.xlsx, `
+  .\samples\<ID>_<Name>_v001.xlsx
+```
+
 - Any `FAIL` → fix and re-run. Do not proceed.
 
 ## 3. Behavioral routing gate 🤖
@@ -41,6 +49,8 @@ How to cut a new VCH release (e.g. v6.16.0) without creating inconsistencies bet
 
 - Bump the version **inside the artifacts** (filenames never change — ADR-010).
 - README: update `**Current version: vX.Y.Z**` and add a one-line changelog bullet at the top of the list.
+- The v0.7.0 release renumbered the line from 6.x (ADR-016); release notes for v0.7.x
+  releases should keep linking that ADR so the numbering jump stays explainable.
 
 ## 5. Rebuild the manifest 🤖
 
@@ -48,7 +58,7 @@ Every release file must have an up-to-date entry in `VCH_release_manifest.json` 
 
 ```bash
 # macOS / Linux
-for f in core/VCH_HarnessCore.xlsx core/VCH_ProjectTemplate.xlsx \
+for f in core/VCH_HarnessCore.xlsx \
          copilot/copilotstart.txt copilot/copilot_custom_instructions.txt \
          tools/harness_lint.ps1 docs/VCH_Cheatsheet_EN.txt \
          docs/RELEASING.md README.md LICENSE; do
@@ -69,16 +79,16 @@ Get-ChildItem core\*.xlsx, copilot\*.txt, tools\*.ps1, docs\*.md, docs\*.txt, RE
 - Use a conventional message, never "Add files via upload":
 
 ```text
-v6.16.0: <short change title> (ADR-0NN)
+v0.7.1: <short change title> (ADR-0NN)
 ```
 
 ## 7. Tag & GitHub Release 🤖
 
 ```bash
-gh release create v6.16.0 \
+gh release create v0.7.1 \
   --repo tkromsa/verifiable-copilot-harness \
   --target main \
-  --title "v6.16.0 — <short change title>" \
+  --title "v0.7.1 — <short change title>" \
   --notes "<notes, see template below>"
 ```
 
@@ -105,7 +115,7 @@ sha256 of every file in `VCH_release_manifest.json`.
 
 1. Download the release files fresh from GitHub.
 2. Re-hash them and compare against `VCH_release_manifest.json`.
-3. Confirm the repo description and README skill count / version agree with the workbooks.
+3. Confirm the repo description and README skill count / version agree with the workbook.
 4. Confirm the new tag points at the release commit.
 
 ```bash

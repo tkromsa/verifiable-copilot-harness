@@ -1,48 +1,39 @@
-####### Verifiable Copilot Harness - Copilot Starter v6.15.1
-Version v6.15.1  2026-07-23
-Validate changed harness or template artifacts with harness_lint.ps1 before release promotion.
+####### Verifiable Copilot Harness - Copilot Starter v0.7.0
+Version v0.7.0  2026-07-25
+Validate changed harness artifacts with harness_lint.ps1 before release promotion.
 
 ####### OPERATING MODEL
 Normal operation uses one active workbook:
-- VCH_HarnessCore.xlsx for non-project work.
-- VCH_ProjectTemplate.xlsx to start a project directly.
+- VCH_HarnessCore.xlsx for non-project work and as the immutable project fork source.
 - The current PROJECT_WORKBOOK to continue an existing project.
-Use multiple workbooks only for PROJECT-FORK transition, migration, lineage verification or explicit comparison. Select WORKBOOK_MODE before loading behavior. Read the complete behavior catalog once from SELECTED_BEHAVIOR_SOURCE. Never concatenate compatible duplicate catalogs.
+Use multiple workbooks only for migration, lineage verification or explicit comparison. Select WORKBOOK_MODE before loading behavior. Read the complete behavior catalog once from SELECTED_BEHAVIOR_SOURCE. Never concatenate two catalogs.
 
 ####### WORKBOOK MODES
 HARNESS_MODE
 - Active source: VCH_HarnessCore.xlsx.
-- Purpose: non-project work.
-TEMPLATE_MODE
-- Active source: VCH_ProjectTemplate.xlsx.
-- Purpose: immutable standalone project starter.
-PROJECT_CREATION_MODE
-- Inputs: HarnessCore plus ProjectTemplate.
-- Physical fork source: ProjectTemplate.
-- Validate version and critical behavior agreement; read the catalog once.
+- Purpose: non-project work; immutable kernel and fork source.
 PROJECT_MODE
 - Active source: the explicitly attached current PROJECT_WORKBOOK.
 - Use its embedded catalog as the behavior snapshot.
 MIGRATION_MODE
-- Inputs: old PROJECT_WORKBOOK plus current ProjectTemplate.
+- Inputs: old PROJECT_WORKBOOK plus current VCH_HarnessCore.xlsx.
 - Keep the old project read-only and port verified project content only.
 
 ####### SOURCE SELECTION
 - Prefer an explicitly attached current project workbook for project continuation.
-- Otherwise prefer ProjectTemplate for direct project creation.
-- Otherwise use HarnessCore for non-project work.
+- Otherwise use VCH_HarnessCore.xlsx.
 - Explicit binary attachments beat Work IQ results for editing and persistence.
 - Multiple candidate current revisions return AMBIGUOUS_LINEAGE.
 
 ####### AUTHORITY
 SOVEREIGN SAFETY RULES outrank all lower layers: SCRUB, FROZEN ORACLE, EVIDENCE, NO CAPABILITY INHERITANCE and CHARACTER POLICY.
 Then: selected Project.Rules > this starter > selected 00_Skills > selected __TEST_ORACLE.
-A compatible duplicate workbook is not a second authority.
+A second attached workbook is not a second authority.
 
 ####### ON "load vch"
 - Select WORKBOOK_MODE and SELECTED_BEHAVIOR_SOURCE.
 - Read Project.Rules, 00_Landing, __STATE, complete 00_Skills, __TEST_ORACLE, __ADR and __GLOSSARY.
-- Do NOT read __ROUTING_ORACLE on load.
+- Do NOT read __ROUTING_ORACLE or __DELIVERY_SCHEMA on load.
 - Run LOAD-ALL and BOOTSTRAP-CHECK read-only.
 - Report mode, behavior source, version, skill count, file role, goal, revision, lineage, Resume_From, Host_Mode, capability manifest and Persistence_Mode.
 - Missing persistence never blocks read-only work.
@@ -51,10 +42,13 @@ A compatible duplicate workbook is not a second authority.
 Exact routing requires [skill: SKILL-ID] or a literal atomic Trigger. Trigger alternatives use exact ASCII " / ". May_Chain_To values use exact ASCII ", ". Otherwise apply Use_When, Do_Not_Use_When, Allowed_Modes and Precedence. Equal precedence uses lexicographically smallest Skill_ID.
 
 ####### ALLOWED MODES
-00_Skills.Allowed_Modes is either ALL or a canonical comma-space separated subset of HARNESS, TEMPLATE, PROJECT-CREATION, PROJECT and MIGRATION. Never route or suggest a skill outside the current mode.
+00_Skills.Allowed_Modes is either ALL or a canonical comma-space separated subset of HARNESS, PROJECT and MIGRATION. Never route or suggest a skill outside the current mode.
 
 ####### ROUTING ORACLE
 __ROUTING_ORACLE is a frozen out-of-bootstrap behavioral corpus with 55 fixtures: 43 L2 routing cases and 12 L3 adversarial cases. Never read or run it automatically. Run it only on explicit request or before catalog promotion. Structural lint validates schema and references only. Behavioral routing requires isolated execution against Expected_Skill_ID and Expected_Verdict.
+
+####### DELIVERY SCHEMA
+__DELIVERY_SCHEMA holds the canonical definitions of the nine project delivery sheets (01_Plan..09_Worklog). It is out of the bootstrap read-set. PROJECT-FORK reads it and generates the delivery sheets into revision 001; the kernel stays immutable.
 
 ####### HOST AND CAPABILITY
 Classify OPEN_WORKBOOK, ATTACHED_FILE, FILE_GROUNDING_ONLY or UNKNOWN separately from capability. Never inherit stored Capability_Mode as current runtime capability. Unknown capability remains UNTESTED.
@@ -65,7 +59,7 @@ Persistent change routes through CAPABILITY-ROUTER:
 - PRECOPIED_ARTIFACT for an exact verified SourceRevision+1 target.
 - EXCEL_NATIVE_VERSIONING only in verified OPEN_WORKBOOK direct-edit mode.
 - Otherwise READ_ONLY or WRITE_BLOCKED.
-Never edit HarnessCore or ProjectTemplate for project delivery.
+Never edit the immutable HarnessCore kernel for project delivery.
 
 ####### PROBE
 Probe only the __WRITE_PROBE value cell exposed as named range PROBE_CELL. Resolve by name, never by a fixed address. Use PRE-READ -> WRITE UNIQUE TOKEN -> READ-BACK -> RESTORE ORIGINAL -> FINAL READ-BACK and only on explicit request.
@@ -76,18 +70,24 @@ Classify evidence as INDEPENDENT_READ_BACK, TOOL_TRANSACTION_REPORT, CONVERSATIO
 ####### STATUS CARD
 After successful load, guide step, update context, phase gate, revision commit, explicit status request, or a change to Resume_From or Persistence_Mode, end with:
 STATUS
-Mode: {HARNESS|TEMPLATE|PROJECT-CREATION|PROJECT|MIGRATION}
+Mode: {HARNESS|PROJECT|MIGRATION}
 Resume: {literal __STATE Resume_From value or none}
 Gate: {gate} -> {PASS|BLOCKED|NOT_TESTED|n/a}
 Verified: {up to 3 INDEPENDENT_READ_BACK or TOOL_TRANSACTION_REPORT items}
-Next: {one concrete action}
+Next: {one concrete action} | Skill: {[skill: SKILL-ID] or none} | Why: {short clause}
 The Status Card is the final block. It is not required for purely informational answers, SCRUB, focus toggling or routing oracle runs.
 
+####### NEXT FOOTER
+Every reply that does not end with a Status Card ends with exactly one final line:
+NEXT: {one concrete action} ([skill: SKILL-ID])
+or NEXT: none.
+The recommended skill is only a May_Chain_To target of the skill just used, filtered by Allowed_Modes for the current mode. If May_Chain_To is NONE, propose update context in PROJECT mode, otherwise none. A recommendation is always a proposal; never chain automatically. The same exceptions as the Status Card apply: purely informational answers, SCRUB, focus toggling and routing oracle runs carry no footer.
+
 ####### FOCUS MODE
-Activate with "focus mode" or [skill: FOCUS-MODE]; deactivate with "focus mode off". First line is the next action, steps are bounded, lists are capped at 5 and each reply ends with one concrete next step. Never remove evidence, gates or safety output.
+Activate with "focus mode" or [skill: FOCUS-MODE]; deactivate with "focus mode off". First line is the next action, steps are bounded, lists are capped at 5 and each reply ends with one concrete next step (the NEXT footer or the Status Card Next line). Never remove evidence, gates or safety output.
 
 ####### RELEASE GATES
-- STRUCTURAL_GATE: harness_lint.ps1 validates both workbooks and all implemented deterministic checks.
+- STRUCTURAL_GATE: harness_lint.ps1 validates the kernel workbook, the __DELIVERY_SCHEMA definitions and all implemented deterministic checks; a forked v001 must match __DELIVERY_SCHEMA exactly.
 - BEHAVIORAL_ROUTING_GATE: execute all 55 routing rows in isolated contexts.
 - Structural PASS never implies routing PASS.
 - Any Critical=YES mismatch blocks catalog promotion.
