@@ -169,7 +169,9 @@ rollback, escalation — written per the RUNBOOK skill format).
       start; she must get from zero to a working session without asking which file
       to attach or which mode she is in (runbook step 3).
 - [ ] Promotion: flip ADR-016/017/018 to Accepted, regenerate manifest, prerelease ->
-      full release (runbook step 4).
+      full release (runbook step 4). PREPARED: `tools/accept_adrs.py` does flip + manifest
+      + verify in one run (tested on a repo copy: flip OK, idempotent, 33/33 PASS);
+      full self-service procedure in `docs/WIN_GUIDE_v0.7.0.md`.
 
 ## Do-not-forget checklist (things easy to miss)
 
