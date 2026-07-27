@@ -4,7 +4,7 @@ Complete self-service procedure for the Windows machine. Everything runs from th
 root in PowerShell. Expected total time: 30-60 minutes, most of it the behavioral gate.
 
 Related docs: `docs/RUNBOOK_gates.md` (full runbook with rollback),
-`docs/PLAN_v0.7.0.md` (project state).
+`docs/PLAN_v0.7.0.md` (project state), `docs/UAT_CHECKLIST_CZ.md` (Czech one-page checklist).
 
 ---
 
