@@ -11,7 +11,7 @@ Safe default: any FAIL stops the runbook; never adapt frozen expected values to 
 | # | Requirement | Verify |
 |---|---|---|
 | 0.1 | Windows machine with desktop Excel | Excel opens a blank workbook without repair dialog |
-| 0.2 | Repo pulled at `main` >= `b9346a1` | `git log --oneline -1` shows `b9346a1` or newer |
+| 0.2 | Repo pulled at `main` including ADR-019 | `git log --oneline -3` shows the v0.7.1 commit |
 | 0.3 | `gh` CLI authenticated, scope `repo` | `gh auth status` |
 | 0.4 | Microsoft Copilot chat access | can attach files to a chat |
 | 0.5 | Python 3 + openpyxl on the Windows machine (for the v001 sample) | `python -c "import openpyxl"` |
@@ -34,7 +34,7 @@ machine with `python tools/build_v001_sample.py` and copy the file over.
 .\tools\harness_lint.ps1 -Path .\core\VCH_HarnessCore.xlsx
 ```
 
-Verify: `PASS ... skills=43 routing=55 probe=B31 modes=ok delivery-schema=ok`, exit code 0
+Verify: `PASS ... skills=43 routing=55 probe=B31 modes=ok delivery-schema=ok starter=ok`, exit code 0
 (`echo $LASTEXITCODE`).
 
 1.3 Generate a fresh v001 and lint both workbooks (FORK_GATE):
@@ -58,9 +58,9 @@ native re-save usually restores the defined name.
 
 ## 2. BEHAVIORAL_ROUTING_GATE (Microsoft Copilot)
 
-2.1 New Copilot chat; attach `core/VCH_HarnessCore.xlsx` + `copilot/copilotstart.txt`;
-    type `load vch`.
-    Verify: bootstrap reports Mode=HARNESS, version v0.7.0, 43 skills,
+2.1 New Copilot chat; attach only `core/VCH_HarnessCore.xlsx` (the starter is embedded
+    as the _STARTER sheet); type `load vch`.
+    Verify: bootstrap reports Mode=HARNESS, version v0.7.1, 43 skills,
     Status Card present at the end.
 
 2.2 Type `run routing oracle`. Feed each of the 55 `Input_Utterance` rows in an isolated
@@ -100,7 +100,7 @@ Verify: all three match; zero FAIL on any Critical=YES row (GUARD or L3).
 ## 4. Promotion (only after 1-3 all PASS)
 
 4.1 Flip ADRs: in `__ADR` set Status `Proposed` -> `Accepted` for ADR-016, ADR-017,
-    ADR-018 (openpyxl patch, not hand edit). Verify: re-run step 1.2 — still PASS.
+    ADR-018, ADR-019 (`python tools/accept_adrs.py`, not hand edit). Verify: re-run step 1.2 — still PASS.
 4.2 Regenerate `VCH_release_manifest.json` (hashes change with the workbook edit) and
     re-run `python tools/verify_v070.py` — 33/33 PASS expected (update the ADR-status
     assertion if one is added later).
@@ -109,7 +109,7 @@ Verify: all three match; zero FAIL on any Critical=YES row (GUARD or L3).
 4.5 Promote the release:
 
 ```powershell
-gh release edit v0.7.0 --prerelease=false
+gh release edit v0.7.1 --prerelease=false
 ```
 
 Update the notes: replace the "Gates status (honest)" section with the recorded PASS

@@ -18,7 +18,7 @@ from pathlib import Path
 
 import openpyxl
 
-ADRS = ("ADR-016", "ADR-017", "ADR-018")
+ADRS = ("ADR-016", "ADR-017", "ADR-018", "ADR-019")
 MANIFEST_FILES = [
     "core/VCH_HarnessCore.xlsx",
     "copilot/copilotstart.txt",
@@ -84,7 +84,7 @@ if result.returncode != 0:
 
 print()
 print("ALL PROMOTION STEPS PASS. Remaining manual steps:")
-print('  git add -A; git commit -m "v0.7.0: gates passed, ADR-016/017/018 accepted"')
+print('  git add -A; git commit -m "v0.7.1: gates passed, ADR-016/017/018/019 accepted"')
 print("  git push origin main")
-print("  gh release edit v0.7.0 --prerelease=false")
+print("  gh release edit v0.7.1 --prerelease=false")
 print("  (update the release notes gates section with your PASS evidence first)")

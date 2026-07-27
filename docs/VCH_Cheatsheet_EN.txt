@@ -1,4 +1,4 @@
-Verifiable Copilot Harness - Quick Use Guide v0.7.0
+Verifiable Copilot Harness - Quick Use Guide v0.7.1
 
 WHAT IT IS
 A governed set of 43 skills and verification rules for Copilot work. One kernel workbook carries the complete behavior catalog plus the canonical delivery-sheet schema; project workbooks are self-contained forks of it. An embedded, out-of-bootstrap behavioral regression corpus (__ROUTING_ORACLE) guards routing quality. Version 0.7.0 is a renumbering from the 6.x line (ADR-016), not a downgrade.
@@ -28,6 +28,7 @@ Current project workbook
 - Contains the behavior snapshot, project identity, state and delivery content.
 - Default active workbook after the fork.
 copilotstart.txt
+- Embedded in the kernel as the _STARTER sheet (ADR-019). Do NOT attach it; the repo txt is the source of truth for harness development.
 - Runtime contract for mode selection, bootstrap, persistence, evidence, the routing oracle and the NEXT footer.
 copilot_custom_instructions.txt
 - Paste once into Copilot Custom Instructions.
@@ -38,7 +39,7 @@ harness_lint.ps1
 
 DAILY START
 Non-project work:
-- Attach VCH_HarnessCore.xlsx.
+- Attach VCH_HarnessCore.xlsx (the starter is embedded as _STARTER).
 - Type: load vch
 - Use a skill or ask normally.
 Start a project:

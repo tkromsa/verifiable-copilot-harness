@@ -7,12 +7,12 @@ param(
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
-$ExpectedVersion = 'v0.7.0'
+$ExpectedVersion = 'v0.7.1'
 $ExpectedSkillCount = 43
 $ExpectedRoutingCount = 55
 $RequiredSheets = @(
     '00_Skills', 'Project.Rules', '__STATE', '__TEST_ORACLE',
-    'Lists', '__ADR', '__GLOSSARY', '__ROUTING_ORACLE', '__DELIVERY_SCHEMA'
+    'Lists', '__ADR', '__GLOSSARY', '__ROUTING_ORACLE', '__DELIVERY_SCHEMA', '_STARTER'
 )
 $ValidModes = @('HARNESS', 'PROJECT', 'MIGRATION')
 $ExpectedDeliverySheets = @(
@@ -155,6 +155,34 @@ function Test-DeliverySchema {
         }
         if (($HeaderCells -join ', ') -ne $Definitions[$Name].Header) {
             throw "Delivery sheet ${Name}: header row does not match schema"
+        }
+    }
+}
+
+function Test-StarterSheet {
+    param($Workbook, [string]$WorkbookPath)
+
+    # ADR-019: _STARTER must reproduce copilot/copilotstart.txt line-for-line.
+    # xlsx does not preserve blank lines as cells, so comparison runs over
+    # non-empty lines only, ordinal-exact.
+    $RepoRoot = Split-Path (Split-Path $WorkbookPath -Parent) -Parent
+    $StarterFile = Join-Path $RepoRoot 'copilot\copilotstart.txt'
+    if (-not (Test-Path -LiteralPath $StarterFile)) {
+        throw "Starter source not found next to the repo: $StarterFile"
+    }
+    $FileLines = @(Get-Content -LiteralPath $StarterFile | Where-Object { $_.Length -gt 0 })
+    $Values = $Workbook.Worksheets.Item('_STARTER').UsedRange.Value2
+    $SheetLines = @()
+    for ($Row = 1; $Row -le $Values.GetLength(0); $Row++) {
+        $Value = [string]$Values[$Row, 1]
+        if ($Value.Length -gt 0) { $SheetLines += $Value }
+    }
+    if ($SheetLines.Count -ne $FileLines.Count) {
+        throw "_STARTER row count $($SheetLines.Count), expected $($FileLines.Count)"
+    }
+    for ($Index = 0; $Index -lt $FileLines.Count; $Index++) {
+        if (-not [string]::Equals($SheetLines[$Index], $FileLines[$Index], [StringComparison]::Ordinal)) {
+            throw "_STARTER line $($Index + 1) differs from copilotstart.txt"
         }
     }
 }
@@ -340,12 +368,13 @@ function Test-Workbook {
 
         Assert-PrintableAscii -Workbook $Workbook -SheetNames @(
             '00_Skills', 'Project.Rules', '__STATE', '00_Landing', '__TEST_ORACLE',
-            'Lists', '__ADR', '__GLOSSARY', '__ROUTING_ORACLE', '__DELIVERY_SCHEMA'
+            'Lists', '__ADR', '__GLOSSARY', '__ROUTING_ORACLE', '__DELIVERY_SCHEMA', '_STARTER'
         )
         Assert-NoStaleProbeAddress -Workbook $Workbook
         Test-DeliverySchema -Workbook $Workbook -SheetNames $SheetNames
+        Test-StarterSheet -Workbook $Workbook -WorkbookPath $FullPath
 
-        Write-Host "PASS $FullPath skills=43 routing=55 probe=B31 modes=ok delivery-schema=ok" -ForegroundColor Green
+        Write-Host "PASS $FullPath skills=43 routing=55 probe=B31 modes=ok delivery-schema=ok starter=ok" -ForegroundColor Green
         return [pscustomobject]@{ Path = $FullPath; Result = 'PASS'; Error = $null }
     }
     catch {

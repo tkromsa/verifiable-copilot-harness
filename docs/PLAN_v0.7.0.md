@@ -152,26 +152,52 @@ the repo).
 - [x] Verified: 44 vch dirs (43 skills + vch-core), zero v6.11.0/v6.15 strings outside
       historical ADR entries, zero mode leftovers.
 
-## Phase 7 — Gates and acceptance
+## v0.7.1 — Embedded starter (ADR-019), DONE
 
-Executable procedure: `docs/RUNBOOK_v0.7.0_gates.md` (preconditions, per-step verifies,
+Follow-up release on top of v0.7.0: only ONE attached file remains — the core
+workbook. The starter text is embedded as a generated `_STARTER` sheet
+(position 2, right after `_README`). `copilot/copilotstart.txt` stays in the
+repo as the source of truth; the sheet is generated from it, never edited by
+hand. Comparison is over non-empty lines (xlsx drops empty cells).
+
+- [x] ADR-019 (Proposed) in `__ADR`; `_STARTER` sheet (94 lines) generated from
+      `copilot/copilotstart.txt`; oracle row STARTER/Starter_Sheet_Present;
+      glossary term "Starter sheet"; version bump 0.7.0 -> 0.7.1 everywhere
+      except historical ADR texts and `_README!B6`.
+- [x] `tools/build_v071.py` (70 cell changes), `tools/verify_v070.py` extended
+      with `_STARTER` checks — ALL CHECKS PASS (35/35); FORK_GATE simulation PASS.
+- [x] `tools/harness_lint.ps1`: v0.7.1, `_STARTER` in RequiredSheets + ASCII scan,
+      new `Test-StarterSheet` (sheet vs `copilot/copilotstart.txt`, non-empty
+      lines, ordinal) — NOT RUN YET (Excel COM is Windows-only; first run = Phase 7).
+- [x] `copilotstart.txt` + custom instructions v0.7.1: read-set starts with
+      `_STARTER`; attach ONLY the workbook, never a separate starter file.
+- [x] Docs patched to v0.7.1: README, cheatsheet, RUNBOOK_gates, WIN_GUIDE,
+      RELEASING; `docs/release_notes_v0.7.1.md` written.
+- [x] `tools/accept_adrs.py`: ADRS = ADR-016..019, v0.7.1 messages (tested on a
+      repo copy: flip + manifest + verify PASS, idempotent).
+
+## Phase 7 — Gates and acceptance (run against v0.7.1)
+
+Executable procedure: `docs/RUNBOOK_gates.md` (preconditions, per-step verifies,
 rollback, escalation — written per the RUNBOOK skill format).
+Self-service home guide: `docs/WIN_GUIDE.md`.
 
-- [ ] STRUCTURAL_GATE: `harness_lint.ps1` PASS on the new core workbook (runbook step 1).
+- [ ] STRUCTURAL_GATE: `harness_lint.ps1` PASS on the v0.7.1 core workbook,
+      including the new STARTER sheet-vs-file check (runbook step 1).
 - [ ] FORK_GATE: lint a freshly forked v001 against `__DELIVERY_SCHEMA` (runbook step 1.3;
       already PASS via Python simulation, needs the Windows COM run).
 - [ ] BEHAVIORAL_ROUTING_GATE: all 55 fixtures in isolated contexts — PASS,
       zero Critical=YES mismatches; watch RT-031, AV-002, AV-009 (runbook step 2).
-- [ ] Manual smoke test in real Copilot: attach core + starter, `load vch`,
+- [ ] Manual smoke test in real Copilot: attach ONLY the core workbook, `load vch`,
       `new project`, verify v001 contains 9 generated delivery sheets, verify NEXT footer
       appears on ordinary replies and Status Card on lifecycle events.
 - [ ] UAT: the "colleague from another department" test — give her only the new quick
       start; she must get from zero to a working session without asking which file
       to attach or which mode she is in (runbook step 3).
-- [ ] Promotion: flip ADR-016/017/018 to Accepted, regenerate manifest, prerelease ->
+- [ ] Promotion: flip ADR-016/017/018/019 to Accepted, regenerate manifest, prerelease ->
       full release (runbook step 4). PREPARED: `tools/accept_adrs.py` does flip + manifest
-      + verify in one run (tested on a repo copy: flip OK, idempotent, 33/33 PASS);
-      full self-service procedure in `docs/WIN_GUIDE_v0.7.0.md`.
+      + verify in one run (tested on a repo copy: flip OK, idempotent, 35/35 PASS);
+      full self-service procedure in `docs/WIN_GUIDE.md`.
 
 ## Do-not-forget checklist (things easy to miss)
 

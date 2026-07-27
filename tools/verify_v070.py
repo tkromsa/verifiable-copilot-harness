@@ -1,4 +1,4 @@
-# Read-back verification of the v0.7.0 kernel. Mirrors the harness's own lint
+# Read-back verification of the v0.7.1 kernel. Mirrors the harness's own lint
 # philosophy: independent read-back, no self-report. Exits nonzero on any FAIL.
 # Run from the repository root:  python tools/verify_v070.py
 import re
@@ -17,8 +17,8 @@ def check(name, ok, detail=""):
 skills = wb["00_Skills"]
 skill_ids = [skills.cell(r, 1).value for r in range(3, 46)]
 check("SKILLCOUNT 43 skills", len([s for s in skill_ids if s]) == 43)
-check("all skill versions v0.7.0",
-      all(skills.cell(r, 10).value == "v0.7.0" for r in range(3, 46)))
+check("all skill versions v0.7.1",
+      all(skills.cell(r, 10).value == "v0.7.1" for r in range(3, 46)))
 
 MODES = {"HARNESS", "PROJECT", "MIGRATION"}
 bad = []
@@ -65,9 +65,9 @@ st = wb["__STATE"]
 fields = {st.cell(r, 1).value: r for r in range(1, st.max_row + 1)}
 check("Schema_Version present, Template_Version gone",
       "Schema_Version" in fields and "Template_Version" not in fields)
-check("Schema_Version == v0.7.0", st.cell(fields["Schema_Version"], 2).value == "v0.7.0")
+check("Schema_Version == v0.7.1", st.cell(fields["Schema_Version"], 2).value == "v0.7.1")
 check("Artifact_Status == IMMUTABLE", st.cell(fields["Artifact_Status"], 2).value == "IMMUTABLE")
-check("Harness version == v0.7.0", st.cell(fields["Harness version"], 2).value == "v0.7.0")
+check("Harness version == v0.7.1", st.cell(fields["Harness version"], 2).value == "v0.7.1")
 
 # routing oracle
 ro = wb["__ROUTING_ORACLE"]
@@ -90,7 +90,7 @@ reqs = [to.cell(r, 3).value for r in range(3, to.max_row + 1)]
 check("oracle Delivery_Schema_Present", "Delivery_Schema_Present" in reqs)
 ver_cells = [to.cell(r, 4).value for r in range(3, to.max_row + 1)
              if to.cell(r, 3).value in ("Harness_Version_Agreement", "Skill_Version_Format")]
-check("oracle version expectations v0.7.0", all(v == "v0.7.0" for v in ver_cells), str(ver_cells))
+check("oracle version expectations v0.7.1", all(v == "v0.7.1" for v in ver_cells), str(ver_cells))
 
 # delivery schema
 ds = wb["__DELIVERY_SCHEMA"]
@@ -152,7 +152,20 @@ for ws in wb.worksheets:
                 non_ascii.append(f"{ws.title}!{c.coordinate}")
 check("all cells printable ASCII", not non_ascii, str(non_ascii[:10]))
 
-expected_sheets = {"_README", "00_Skills", "Project.Rules", "__STATE", "00_Landing",
+# starter sheet (ADR-019): exists and reproduces every non-empty line of
+# copilot/copilotstart.txt (xlsx does not preserve blank lines as cells)
+from pathlib import Path
+txt_lines = [ln for ln in Path("copilot/copilotstart.txt").read_text(encoding="utf-8").split("\n") if ln]
+starter_rows = []
+if "_STARTER" in wb.sheetnames:
+    ws_s = wb["_STARTER"]
+    starter_rows = [str(ws_s.cell(r, 1).value) for r in range(1, ws_s.max_row + 1)
+                    if ws_s.cell(r, 1).value]
+check("_STARTER sheet present", "_STARTER" in wb.sheetnames)
+check("_STARTER matches copilotstart.txt (non-empty lines)", starter_rows == txt_lines,
+      f"rows={len(starter_rows)} txt={len(txt_lines)}")
+
+expected_sheets = {"_README", "_STARTER", "00_Skills", "Project.Rules", "__STATE", "00_Landing",
                    "__TEST_ORACLE", "Lists", "__ADR", "__GLOSSARY", "__ROUTING_ORACLE",
                    "__DELIVERY_SCHEMA"}
 check("sheet inventory", set(wb.sheetnames) == expected_sheets, str(wb.sheetnames))

@@ -1,5 +1,6 @@
-####### Verifiable Copilot Harness - Copilot Starter v0.7.0
-Version v0.7.0  2026-07-25
+####### Verifiable Copilot Harness - Copilot Starter v0.7.1
+Version v0.7.1  2026-07-27
+This starter is embedded in the kernel workbook as the _STARTER sheet (ADR-019); attach only the workbook. The repo file copilot/copilotstart.txt is the source of truth and the lint asserts every non-empty sheet row matches it.
 Validate changed harness artifacts with harness_lint.ps1 before release promotion.
 
 ####### OPERATING MODEL
@@ -32,7 +33,7 @@ A second attached workbook is not a second authority.
 
 ####### ON "load vch"
 - Select WORKBOOK_MODE and SELECTED_BEHAVIOR_SOURCE.
-- Read Project.Rules, 00_Landing, __STATE, complete 00_Skills, __TEST_ORACLE, __ADR and __GLOSSARY.
+- Read _STARTER (this contract), Project.Rules, 00_Landing, __STATE, complete 00_Skills, __TEST_ORACLE, __ADR and __GLOSSARY.
 - Do NOT read __ROUTING_ORACLE or __DELIVERY_SCHEMA on load.
 - Run LOAD-ALL and BOOTSTRAP-CHECK read-only.
 - Report mode, behavior source, version, skill count, file role, goal, revision, lineage, Resume_From, Host_Mode, capability manifest and Persistence_Mode.
@@ -87,7 +88,7 @@ The recommended skill is only a May_Chain_To target of the skill just used, filt
 Activate with "focus mode" or [skill: FOCUS-MODE]; deactivate with "focus mode off". First line is the next action, steps are bounded, lists are capped at 5 and each reply ends with one concrete next step (the NEXT footer or the Status Card Next line). Never remove evidence, gates or safety output.
 
 ####### RELEASE GATES
-- STRUCTURAL_GATE: harness_lint.ps1 validates the kernel workbook, the __DELIVERY_SCHEMA definitions and all implemented deterministic checks; a forked v001 must match __DELIVERY_SCHEMA exactly.
+- STRUCTURAL_GATE: harness_lint.ps1 validates the kernel workbook, the _STARTER sheet against copilot/copilotstart.txt, the __DELIVERY_SCHEMA definitions and all implemented deterministic checks; a forked v001 must match __DELIVERY_SCHEMA exactly.
 - BEHAVIORAL_ROUTING_GATE: execute all 55 routing rows in isolated contexts.
 - Structural PASS never implies routing PASS.
 - Any Critical=YES mismatch blocks catalog promotion.

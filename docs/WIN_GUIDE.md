@@ -1,9 +1,9 @@
-# VCH v0.7.0 — Windows Home Guide (gates + promotion)
+# VCH v0.7.1 — Windows Home Guide (gates + promotion)
 
 Complete self-service procedure for the Windows machine. Everything runs from the repo
 root in PowerShell. Expected total time: 30-60 minutes, most of it the behavioral gate.
 
-Related docs: `docs/RUNBOOK_v0.7.0_gates.md` (full runbook with rollback),
+Related docs: `docs/RUNBOOK_gates.md` (full runbook with rollback),
 `docs/PLAN_v0.7.0.md` (project state).
 
 ---
@@ -14,7 +14,7 @@ Related docs: `docs/RUNBOOK_v0.7.0_gates.md` (full runbook with rollback),
 cd <wherever-you-clone>
 git clone https://github.com/tkromsa/verifiable-copilot-harness.git
 cd verifiable-copilot-harness
-git log --oneline -1        # must show 949e2eb or newer
+git log --oneline -1        # must show the v0.7.1 commit or newer
 python --version            # any Python 3.10+
 python -m pip install openpyxl
 ```
@@ -35,7 +35,7 @@ B.2 Lint the kernel:
 echo $LASTEXITCODE     # must be 0
 ```
 
-Expected: `PASS ... skills=43 routing=55 probe=B31 modes=ok delivery-schema=ok`
+Expected: `PASS ... skills=43 routing=55 probe=B31 modes=ok delivery-schema=ok starter=ok`
 
 B.3 Fork gate — generate a v001 and lint both:
 
@@ -54,9 +54,9 @@ the workbook.
 
 ## C. Behavioral routing gate (20-40 min, Microsoft Copilot)
 
-C.1 New Copilot chat. Attach `core/VCH_HarnessCore.xlsx` and `copilot/copilotstart.txt`.
-    Type: `load vch`
-    Expected: bootstrap reports Mode=HARNESS, version v0.7.0, 43 skills, ends with a
+C.1 New Copilot chat. Attach only `core/VCH_HarnessCore.xlsx` (the starter is embedded
+    as the `_STARTER` sheet). Type: `load vch`
+    Expected: bootstrap reports Mode=HARNESS, version v0.7.1, 43 skills, ends with a
     Status Card whose Next line contains `| Skill: ... | Why: ...`.
 
 C.2 Type: `run routing oracle`
@@ -90,7 +90,7 @@ file to attach. Any "which file do I need?" question = docs FAIL; note it and fi
 
 ## E. Promotion (5 min, after B-D all PASS)
 
-E.1 Update the gates section in `docs/release_notes_v0.7.0.md` with your evidence
+E.1 Update the gates section in `docs/release_notes_v0.7.1.md` with your evidence
     (lint output, routing results, UAT outcome).
 
 E.2 Run the promotion script:
@@ -99,7 +99,7 @@ E.2 Run the promotion script:
 python tools\accept_adrs.py
 ```
 
-It flips ADR-016/017/018 to Accepted, regenerates the manifest and re-verifies the
+It flips ADR-016/017/018/019 to Accepted, regenerates the manifest and re-verifies the
 workbook. Expected last line: `ALL PROMOTION STEPS PASS.`
 
 E.3 Re-run the lint once more (the workbook changed):
@@ -112,9 +112,9 @@ E.4 Commit, push, promote:
 
 ```powershell
 git add -A
-git commit -m "v0.7.0: gates passed, ADR-016/017/018 accepted"
+git commit -m "v0.7.1: gates passed, ADR-016/017/018/019 accepted"
 git push origin main
-gh release edit v0.7.0 --prerelease=false --notes-file docs/release_notes_v0.7.0.md
+gh release edit v0.7.1 --prerelease=false --notes-file docs/release_notes_v0.7.1.md
 ```
 
 E.5 Verify on GitHub: the release page no longer shows "Pre-release" and the notes

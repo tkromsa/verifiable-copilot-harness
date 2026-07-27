@@ -1,6 +1,6 @@
 # VCH Release Checklist
 
-How to cut a new VCH release (e.g. v0.7.1) without creating inconsistencies between the workbook, README, manifest, tag, release and wiki.
+How to cut a new VCH release (e.g. v0.7.2) without creating inconsistencies between the workbook, README, manifest, tag, release and wiki.
 
 > This whole procedure can be delegated to an AI agent with GitHub CLI access (`gh auth login`, scope `repo`). Steps marked 🤖 are agent-friendly; steps marked 🪟 require Windows + desktop Excel.
 
@@ -19,6 +19,7 @@ How to cut a new VCH release (e.g. v0.7.1) without creating inconsistencies betw
 - Update `SKILLCOUNT` if skills were added or removed.
 - Add or update `__ROUTING_ORACLE` fixtures for any new or changed trigger / precedence.
 - If delivery sheets change, update `__DELIVERY_SCHEMA` — never edit generated v001 sheets directly.
+- If the starter changes, edit `copilot/copilotstart.txt` (source of truth) and regenerate the `_STARTER` sheet — never edit the sheet directly. The lint asserts sheet and file match (ADR-019).
 
 ## 2. Structural gate 🪟
 
@@ -79,16 +80,16 @@ Get-ChildItem core\*.xlsx, copilot\*.txt, tools\*.ps1, docs\*.md, docs\*.txt, RE
 - Use a conventional message, never "Add files via upload":
 
 ```text
-v0.7.1: <short change title> (ADR-0NN)
+v0.7.2: <short change title> (ADR-0NN)
 ```
 
 ## 7. Tag & GitHub Release 🤖
 
 ```bash
-gh release create v0.7.1 \
+gh release create v0.7.2 \
   --repo tkromsa/verifiable-copilot-harness \
   --target main \
-  --title "v0.7.1 — <short change title>" \
+  --title "v0.7.2 — <short change title>" \
   --notes "<notes, see template below>"
 ```
 
